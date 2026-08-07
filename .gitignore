@@ -65,3 +65,11 @@ fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots/**/*.png
 fastlane/test_output
+
+# Android / Gradle
+Android/**/build/
+Android/**/.gradle/
+Android/**/local.properties
+Android/**/.idea/
+*.iml
+.cxx/

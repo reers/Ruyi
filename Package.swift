@@ -23,7 +23,7 @@ let package = Package(
             dependencies: [
                 .product(name: "ThorVG", package: "thorvg.swift")
             ],
-            path: "Sources/Ruyi",
+            path: "Apple/Sources/Ruyi",
             linkerSettings: [
                 .linkedLibrary("c++")
             ]
@@ -31,7 +31,7 @@ let package = Package(
         .testTarget(
             name: "RuyiTests",
             dependencies: ["Ruyi"],
-            path: "Tests/RuyiTests",
+            path: "Apple/Tests/RuyiTests",
             resources: [
                 .copy("Resources/sample.svg")
             ]

@@ -1,11 +1,31 @@
 # Ruyi
 
-Cross-platform SVG **load & render** runtime for Apple platforms.  
+Cross-platform SVG **load & render** runtime.  
 Scale and tint your own SVGs — **no built-in icon set**.
 
 > 如意金箍棒：能大能小 — vector graphics that scale freely.
 
-## Platforms
+## Repository layout
+
+MMKV-style multi-platform monorepo:
+
+```text
+Package.swift              # SPM entry (path → Apple/Sources/Ruyi)
+Apple/
+  Sources/Ruyi/            # Swift API
+  Tests/RuyiTests/
+  RuyiDemo/                # XcodeGen demos (iOS / macOS / tvOS / watchOS / visionOS)
+Android/
+  Ruyi/                    # Open this folder in Android Studio
+    ruyi/                  # Kotlin library → io.github.reers:ruyi
+    ruyidemo/              # Compose demo
+```
+
+---
+
+## Apple (SPM)
+
+### Platforms
 
 - iOS 13+ (arm64 / Simulator arm64)
 - macOS 10.15+ (Apple Silicon)
@@ -15,7 +35,7 @@ Scale and tint your own SVGs — **no built-in icon set**.
 
 > ThorVG binary ships Apple Silicon slices only (via [`vnixx/thorvg.swift`](https://github.com/vnixx/thorvg.swift) `0.0.3+`).
 
-## Install (SPM)
+### Install
 
 ```swift
 dependencies: [
@@ -23,7 +43,7 @@ dependencies: [
 ]
 ```
 
-## Usage
+### Usage
 
 ```swift
 import Ruyi
@@ -52,13 +72,9 @@ Ruyi needs the **original SVG source** (file path, bundle resource, or in-memory
 
 Put `.svg` files in the app / package **bundle** (Copy Bundle Resources / SPM `resources`) and load via `Ruyi.image(named:in:)` / `contentsOf:` / `data:`.
 
-Asset Catalog is fine for system `UIImage` / SwiftUI `Image`; use a separate bundle resource for Ruyi.
+### Demo
 
-## Demo
-
-Lucide-style live customizer: color / stroke width / size / absolute stroke width.
-
-Open `RuyiDemo/RuyiDemo.xcodeproj` in Xcode:
+Open `Apple/RuyiDemo/RuyiDemo.xcodeproj` in Xcode:
 
 | Scheme | Platform |
 |--------|----------|
@@ -68,19 +84,69 @@ Open `RuyiDemo/RuyiDemo.xcodeproj` in Xcode:
 | **RuyiDemo-watchOS** | watchOS Simulator / device |
 | **RuyiDemo-visionOS** | visionOS Simulator / device |
 
-Regenerate the Xcode project after editing `RuyiDemo/project.yml`:
-
 ```bash
-cd RuyiDemo && xcodegen generate
+cd Apple/RuyiDemo && xcodegen generate
 ```
 
-Sample icons live in `RuyiDemo/Sources/RuyiDemo-macOS/Resources/Icons` (demo only — not part of the Ruyi library).
+macOS CLI fallback: `cd Apple/RuyiDemo && ./run.sh`
 
-macOS CLI fallback: `cd RuyiDemo && ./run.sh`
-
-## Engine
+### Engine
 
 [ThorVG](https://github.com/thorvg/thorvg) via SPM binary package [`vnixx/thorvg.swift`](https://github.com/vnixx/thorvg.swift) (CPU raster + SVG + C API).
+
+---
+
+## Android (Maven)
+
+### Platforms
+
+- Android API 24+ (library); demo targets API 26+
+- Native ThorVG ships **arm64-v8a** only (via [`io.github.vnixx:thorvg`](https://central.sonatype.com/artifact/io.github.vnixx/thorvg))
+
+### Install
+
+```kotlin
+dependencies {
+    implementation("io.github.reers:ruyi:0.0.1")
+}
+```
+
+> Until the first Central publish, use a local project dependency or `publishToMavenLocal` (see [`Android/Ruyi/PUBLISHING.md`](Android/Ruyi/PUBLISHING.md)).
+
+### Usage
+
+```kotlin
+import io.github.reers.ruyi.Ruyi
+
+val options = Ruyi.Options(
+    sizeDp = 24f,
+    color = 0xFFFF0000.toInt(),
+    strokeWidth = 2f,
+    density = resources.displayMetrics.density,
+)
+
+val bitmap = Ruyi.image(svgString, options)
+// or: Ruyi.image(context, "heart", options)
+```
+
+### Demo
+
+```bash
+cd Android/Ruyi
+./gradlew :ruyidemo:installDebug
+```
+
+Open `Android/Ruyi` in Android Studio. Sample icons live in `ruyidemo/src/main/assets/icons` (demo only).
+
+### Engine
+
+[ThorVG](https://github.com/thorvg/thorvg) via Maven [`io.github.vnixx:thorvg`](https://github.com/vnixx/thorvg.android) (CPU raster + SVG + C API + JNI).
+
+### Publishing
+
+See [`Android/Ruyi/PUBLISHING.md`](Android/Ruyi/PUBLISHING.md). Coordinates: **`io.github.reers:ruyi`**.
+
+---
 
 ## License
 
