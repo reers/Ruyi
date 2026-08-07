@@ -7,36 +7,84 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		00AFE8FA10922E636C2C3D34 /* Ruyi in Frameworks */ = {isa = PBXBuildFile; productRef = 66B52A2B6ED180A59F14AF2F /* Ruyi */; };
 		0CCC46D8041FBBBDB6A41C03 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5D0BB3E648D0F765F351EE4 /* ContentView.swift */; };
+		1C998C251A4C61B10E736703 /* RuyiDemoWatchOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1976ECE41E64CC3EF711F6FD /* RuyiDemoWatchOSApp.swift */; };
+		25013FCA385A7B3B675019EE /* Icons in Resources */ = {isa = PBXBuildFile; fileRef = EE134C8C4A7AB7D4A03569BD /* Icons */; };
+		29B238065774DF4865286430 /* Ruyi in Frameworks */ = {isa = PBXBuildFile; productRef = 504A2379EE380DCE787295F6 /* Ruyi */; };
 		2EE6BDA3FF2E9F0FF2E45DE9 /* IconCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25524E1F7A84469B200F58B5 /* IconCatalog.swift */; };
 		36B5ECFCE29F4B64F71FC109 /* RuyiDemoMacOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F35B5921A7F0783630A9CD51 /* RuyiDemoMacOSApp.swift */; };
+		3EAB7288E5FF6BFEAC211E33 /* IconCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25524E1F7A84469B200F58B5 /* IconCatalog.swift */; };
+		4BF769C2EE89D6CA66FFD408 /* RuyiDemoVisionOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62DF3456CBA99BC1391F70EB /* RuyiDemoVisionOSApp.swift */; };
+		4EF75E9C25F325B94CA3F0B0 /* RuyiDemoTVOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CE0C477FF55C6A5DF81734 /* RuyiDemoTVOSApp.swift */; };
+		594303E1DBD4693F14EA12F5 /* Ruyi in Frameworks */ = {isa = PBXBuildFile; productRef = 900D259E879053E7A283F063 /* Ruyi */; };
 		5EA55A79604357F8B7E466A4 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DD20B1733568139AADA0801 /* ContentView.swift */; };
 		788344F3B3262EF851314696 /* RuyiDemoIOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01E3E0CC9F6D8093C2A8C3B0 /* RuyiDemoIOSApp.swift */; };
+		7E56F7EFF34145B27B506633 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EAFC9F2B539117576A34E74 /* ContentView.swift */; };
 		9238891503899FF9F476732A /* Icons in Resources */ = {isa = PBXBuildFile; fileRef = EE134C8C4A7AB7D4A03569BD /* Icons */; };
+		958FCE7A31B58F6DB910FB36 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB1A3CD67EB49B3042627BA6 /* ContentView.swift */; };
 		A0647E951B9344EE068D3F10 /* Icons in Resources */ = {isa = PBXBuildFile; fileRef = EE134C8C4A7AB7D4A03569BD /* Icons */; };
+		BF998609AE995DED4DECDEA7 /* Icons in Resources */ = {isa = PBXBuildFile; fileRef = EE134C8C4A7AB7D4A03569BD /* Icons */; };
 		CA784F15667B541206258B65 /* Ruyi in Frameworks */ = {isa = PBXBuildFile; productRef = 782D0306C7781CEB95B54DE6 /* Ruyi */; };
 		E1A087356A02143A47C6CB83 /* IconCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25524E1F7A84469B200F58B5 /* IconCatalog.swift */; };
+		E8A4B97D003521DDE5369CCA /* IconCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25524E1F7A84469B200F58B5 /* IconCatalog.swift */; };
 		EA4D7BB8E65DC362A17EA85F /* Ruyi in Frameworks */ = {isa = PBXBuildFile; productRef = DCEB8BE7FEDF949452066A43 /* Ruyi */; };
+		EE7DC77BDA0A26FD2C4501DE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFE067FE44292D56BC3577EE /* ContentView.swift */; };
+		F3E81E22C3273416741EFE71 /* IconCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25524E1F7A84469B200F58B5 /* IconCatalog.swift */; };
+		F940D1A3DECF4EA29B768AF0 /* Icons in Resources */ = {isa = PBXBuildFile; fileRef = EE134C8C4A7AB7D4A03569BD /* Icons */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		01E3E0CC9F6D8093C2A8C3B0 /* RuyiDemoIOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuyiDemoIOSApp.swift; sourceTree = "<group>"; };
+		1976ECE41E64CC3EF711F6FD /* RuyiDemoWatchOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuyiDemoWatchOSApp.swift; sourceTree = "<group>"; };
 		25524E1F7A84469B200F58B5 /* IconCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconCatalog.swift; sourceTree = "<group>"; };
+		26CE0C477FF55C6A5DF81734 /* RuyiDemoTVOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuyiDemoTVOSApp.swift; sourceTree = "<group>"; };
+		344E14E40EBADDBC85C8065A /* RuyiDemo-visionOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RuyiDemo-visionOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		54E3F95BF6F5BF3323038363 /* RuyiDemo-watchOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RuyiDemo-watchOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		62DF3456CBA99BC1391F70EB /* RuyiDemoVisionOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuyiDemoVisionOSApp.swift; sourceTree = "<group>"; };
 		8DD20B1733568139AADA0801 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		8EAFC9F2B539117576A34E74 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		976B0E56C45B77DFCBBF5208 /* RuyiDemo-macOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RuyiDemo-macOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A89789BE89D361F5E08C4E8A /* Ruyi */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Ruyi; path = ..; sourceTree = SOURCE_ROOT; };
 		D5D0BB3E648D0F765F351EE4 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		D6323B099D346D336F2E3882 /* RuyiDemo-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RuyiDemo-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DDFBABB4843EEB6BB9E951BD /* RuyiDemo-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RuyiDemo-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DFE067FE44292D56BC3577EE /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		EE134C8C4A7AB7D4A03569BD /* Icons */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Icons; path = "Sources/RuyiDemo-macOS/Resources/Icons"; sourceTree = SOURCE_ROOT; };
 		F35B5921A7F0783630A9CD51 /* RuyiDemoMacOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuyiDemoMacOSApp.swift; sourceTree = "<group>"; };
+		FB1A3CD67EB49B3042627BA6 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		22BC98265BC4D2465FBB1F77 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				00AFE8FA10922E636C2C3D34 /* Ruyi in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		684E9808795476A45E17169B /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				EA4D7BB8E65DC362A17EA85F /* Ruyi in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		82E32B6B01B19C4048FF74A2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				29B238065774DF4865286430 /* Ruyi in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A097C5EE748F51F17D916380 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				594303E1DBD4693F14EA12F5 /* Ruyi in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -76,6 +124,9 @@
 			children = (
 				0EA6F287D35DCBECADD4D5F3 /* RuyiDemo-iOS */,
 				09583F92EB108E06829119B8 /* RuyiDemo-macOS */,
+				D9FF9914FD06D84665EAC62F /* RuyiDemo-tvOS */,
+				D0CD2CAF554D0BB309835DA7 /* RuyiDemo-visionOS */,
+				8FF9BDFB9D57A372D34C3355 /* RuyiDemo-watchOS */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -86,6 +137,15 @@
 				EE134C8C4A7AB7D4A03569BD /* Icons */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		8FF9BDFB9D57A372D34C3355 /* RuyiDemo-watchOS */ = {
+			isa = PBXGroup;
+			children = (
+				DFE067FE44292D56BC3577EE /* ContentView.swift */,
+				1976ECE41E64CC3EF711F6FD /* RuyiDemoWatchOSApp.swift */,
+			);
+			path = "RuyiDemo-watchOS";
 			sourceTree = "<group>";
 		};
 		AC32E21AC443ED7DA2BD6BB3 /* Packages */ = {
@@ -105,11 +165,32 @@
 			);
 			sourceTree = "<group>";
 		};
+		D0CD2CAF554D0BB309835DA7 /* RuyiDemo-visionOS */ = {
+			isa = PBXGroup;
+			children = (
+				8EAFC9F2B539117576A34E74 /* ContentView.swift */,
+				62DF3456CBA99BC1391F70EB /* RuyiDemoVisionOSApp.swift */,
+			);
+			path = "RuyiDemo-visionOS";
+			sourceTree = "<group>";
+		};
+		D9FF9914FD06D84665EAC62F /* RuyiDemo-tvOS */ = {
+			isa = PBXGroup;
+			children = (
+				FB1A3CD67EB49B3042627BA6 /* ContentView.swift */,
+				26CE0C477FF55C6A5DF81734 /* RuyiDemoTVOSApp.swift */,
+			);
+			path = "RuyiDemo-tvOS";
+			sourceTree = "<group>";
+		};
 		EA45BD3418BD959BE92F5353 /* Products */ = {
 			isa = PBXGroup;
 			children = (
 				D6323B099D346D336F2E3882 /* RuyiDemo-iOS.app */,
 				976B0E56C45B77DFCBBF5208 /* RuyiDemo-macOS.app */,
+				DDFBABB4843EEB6BB9E951BD /* RuyiDemo-tvOS.app */,
+				344E14E40EBADDBC85C8065A /* RuyiDemo-visionOS.app */,
+				54E3F95BF6F5BF3323038363 /* RuyiDemo-watchOS.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -137,6 +218,26 @@
 			productReference = D6323B099D346D336F2E3882 /* RuyiDemo-iOS.app */;
 			productType = "com.apple.product-type.application";
 		};
+		28326931CB803D020CBB1F0B /* RuyiDemo-visionOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3F6231193B94987EC9091022 /* Build configuration list for PBXNativeTarget "RuyiDemo-visionOS" */;
+			buildPhases = (
+				15B72D5474A82D36E88EFA23 /* Sources */,
+				64D9AE3D1E30AE5940A2430D /* Resources */,
+				82E32B6B01B19C4048FF74A2 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "RuyiDemo-visionOS";
+			packageProductDependencies = (
+				504A2379EE380DCE787295F6 /* Ruyi */,
+			);
+			productName = "RuyiDemo-visionOS";
+			productReference = 344E14E40EBADDBC85C8065A /* RuyiDemo-visionOS.app */;
+			productType = "com.apple.product-type.application";
+		};
 		77532D92E9C3FE65AA48506A /* RuyiDemo-macOS */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = E8C399D790D0DD6408E3572C /* Build configuration list for PBXNativeTarget "RuyiDemo-macOS" */;
@@ -155,6 +256,46 @@
 			);
 			productName = "RuyiDemo-macOS";
 			productReference = 976B0E56C45B77DFCBBF5208 /* RuyiDemo-macOS.app */;
+			productType = "com.apple.product-type.application";
+		};
+		DFEB657A626C50A13BD25827 /* RuyiDemo-tvOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 38B7ACFDDE2F0D4D898E9B9B /* Build configuration list for PBXNativeTarget "RuyiDemo-tvOS" */;
+			buildPhases = (
+				B2FAE7F46B5B4C60EA4B9614 /* Sources */,
+				6B465178BBA2AD05347EFB7E /* Resources */,
+				A097C5EE748F51F17D916380 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "RuyiDemo-tvOS";
+			packageProductDependencies = (
+				900D259E879053E7A283F063 /* Ruyi */,
+			);
+			productName = "RuyiDemo-tvOS";
+			productReference = DDFBABB4843EEB6BB9E951BD /* RuyiDemo-tvOS.app */;
+			productType = "com.apple.product-type.application";
+		};
+		E7152A2D6811B4C27C1E2C70 /* RuyiDemo-watchOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EB51615AF34DB5FD98691BE9 /* Build configuration list for PBXNativeTarget "RuyiDemo-watchOS" */;
+			buildPhases = (
+				9C979783F8EE9D34F10D5939 /* Sources */,
+				48C158D03C48DEA51A7FF2FE /* Resources */,
+				22BC98265BC4D2465FBB1F77 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "RuyiDemo-watchOS";
+			packageProductDependencies = (
+				66B52A2B6ED180A59F14AF2F /* Ruyi */,
+			);
+			productName = "RuyiDemo-watchOS";
+			productReference = 54E3F95BF6F5BF3323038363 /* RuyiDemo-watchOS.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -185,6 +326,9 @@
 			targets = (
 				1AA10DB935FE317F8B29E188 /* RuyiDemo-iOS */,
 				77532D92E9C3FE65AA48506A /* RuyiDemo-macOS */,
+				DFEB657A626C50A13BD25827 /* RuyiDemo-tvOS */,
+				28326931CB803D020CBB1F0B /* RuyiDemo-visionOS */,
+				E7152A2D6811B4C27C1E2C70 /* RuyiDemo-watchOS */,
 			);
 		};
 /* End PBXProject section */
@@ -195,6 +339,30 @@
 			buildActionMask = 2147483647;
 			files = (
 				A0647E951B9344EE068D3F10 /* Icons in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		48C158D03C48DEA51A7FF2FE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F940D1A3DECF4EA29B768AF0 /* Icons in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		64D9AE3D1E30AE5940A2430D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF998609AE995DED4DECDEA7 /* Icons in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6B465178BBA2AD05347EFB7E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				25013FCA385A7B3B675019EE /* Icons in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -219,6 +387,36 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		15B72D5474A82D36E88EFA23 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7E56F7EFF34145B27B506633 /* ContentView.swift in Sources */,
+				F3E81E22C3273416741EFE71 /* IconCatalog.swift in Sources */,
+				4BF769C2EE89D6CA66FFD408 /* RuyiDemoVisionOSApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9C979783F8EE9D34F10D5939 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EE7DC77BDA0A26FD2C4501DE /* ContentView.swift in Sources */,
+				3EAB7288E5FF6BFEAC211E33 /* IconCatalog.swift in Sources */,
+				1C998C251A4C61B10E736703 /* RuyiDemoWatchOSApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B2FAE7F46B5B4C60EA4B9614 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				958FCE7A31B58F6DB910FB36 /* ContentView.swift in Sources */,
+				E8A4B97D003521DDE5369CCA /* IconCatalog.swift in Sources */,
+				4EF75E9C25F325B94CA3F0B0 /* RuyiDemoTVOSApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		FAA97026061A458BD80EBDEA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -238,10 +436,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGNING_ALLOWED = YES;
 				CODE_SIGNING_REQUIRED = NO;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = 8TCNQ547JF;
 				ENABLE_HARDENED_RUNTIME = NO;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Info.plist;
@@ -252,7 +448,6 @@
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.phoenix.RuyiDemo.macos;
 				PRODUCT_NAME = "RuyiDemo-macOS";
-				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -263,9 +458,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGNING_ALLOWED = YES;
 				CODE_SIGNING_REQUIRED = NO;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 8TCNQ547JF;
+				CODE_SIGN_IDENTITY = "-";
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "Info-iOS.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
@@ -275,12 +468,33 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.phoenix.RuyiDemo.ios;
 				PRODUCT_NAME = "RuyiDemo-iOS";
-				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				SUPPORTS_MACCATALYST = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
+		};
+		36AB1E89BA21A97B55958CEA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "-";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "Info-watchOS.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.phoenix.RuyiDemo.watchos;
+				PRODUCT_NAME = "RuyiDemo-watchOS";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 9.0;
+			};
+			name = Debug;
 		};
 		4EB9BFF2657D365B45F48770 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -288,10 +502,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGNING_ALLOWED = YES;
 				CODE_SIGNING_REQUIRED = NO;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = 8TCNQ547JF;
 				ENABLE_HARDENED_RUNTIME = NO;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Info.plist;
@@ -302,8 +514,51 @@
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.phoenix.RuyiDemo.macos;
 				PRODUCT_NAME = "RuyiDemo-macOS";
-				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		5D1574C4C14F05B53649BD77 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "-";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "Info-watchOS.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.phoenix.RuyiDemo.watchos;
+				PRODUCT_NAME = "RuyiDemo-watchOS";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 9.0;
+			};
+			name = Release;
+		};
+		6055676D9216C25EEE8D2E7D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "-";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "Info-tvOS.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.phoenix.RuyiDemo.tvos;
+				PRODUCT_NAME = "RuyiDemo-tvOS";
+				SDKROOT = appletvos;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 16.0;
 			};
 			name = Debug;
 		};
@@ -360,6 +615,30 @@
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.9;
+				TVOS_DEPLOYMENT_TARGET = 16.0;
+				WATCHOS_DEPLOYMENT_TARGET = 9.0;
+				XROS_DEPLOYMENT_TARGET = 1.0;
+			};
+			name = Release;
+		};
+		7DA9E45EE6CC18095204F262 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "-";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "Info-visionOS.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.phoenix.RuyiDemo.visionos;
+				PRODUCT_NAME = "RuyiDemo-visionOS";
+				SDKROOT = xros;
+				TARGETED_DEVICE_FAMILY = 7;
+				XROS_DEPLOYMENT_TARGET = 1.0;
 			};
 			name = Release;
 		};
@@ -369,9 +648,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGNING_ALLOWED = YES;
 				CODE_SIGNING_REQUIRED = NO;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 8TCNQ547JF;
+				CODE_SIGN_IDENTITY = "-";
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "Info-iOS.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
@@ -381,10 +658,30 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.phoenix.RuyiDemo.ios;
 				PRODUCT_NAME = "RuyiDemo-iOS";
-				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				SUPPORTS_MACCATALYST = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		BBA4DC7442B871591148F571 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "-";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "Info-visionOS.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.phoenix.RuyiDemo.visionos;
+				PRODUCT_NAME = "RuyiDemo-visionOS";
+				SDKROOT = xros;
+				TARGETED_DEVICE_FAMILY = 7;
+				XROS_DEPLOYMENT_TARGET = 1.0;
 			};
 			name = Debug;
 		};
@@ -448,12 +745,55 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.9;
+				TVOS_DEPLOYMENT_TARGET = 16.0;
+				WATCHOS_DEPLOYMENT_TARGET = 9.0;
+				XROS_DEPLOYMENT_TARGET = 1.0;
 			};
 			name = Debug;
+		};
+		F69E0AA41C572AD9A37401B3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "-";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "Info-tvOS.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.phoenix.RuyiDemo.tvos;
+				PRODUCT_NAME = "RuyiDemo-tvOS";
+				SDKROOT = appletvos;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 16.0;
+			};
+			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		38B7ACFDDE2F0D4D898E9B9B /* Build configuration list for PBXNativeTarget "RuyiDemo-tvOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6055676D9216C25EEE8D2E7D /* Debug */,
+				F69E0AA41C572AD9A37401B3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		3F6231193B94987EC9091022 /* Build configuration list for PBXNativeTarget "RuyiDemo-visionOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BBA4DC7442B871591148F571 /* Debug */,
+				7DA9E45EE6CC18095204F262 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 		90CEA912C4C3B7A897CBB2B3 /* Build configuration list for PBXNativeTarget "RuyiDemo-iOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -481,6 +821,15 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
+		EB51615AF34DB5FD98691BE9 /* Build configuration list for PBXNativeTarget "RuyiDemo-watchOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				36AB1E89BA21A97B55958CEA /* Debug */,
+				5D1574C4C14F05B53649BD77 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
@@ -491,7 +840,19 @@
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		504A2379EE380DCE787295F6 /* Ruyi */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Ruyi;
+		};
+		66B52A2B6ED180A59F14AF2F /* Ruyi */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Ruyi;
+		};
 		782D0306C7781CEB95B54DE6 /* Ruyi */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Ruyi;
+		};
+		900D259E879053E7A283F063 /* Ruyi */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Ruyi;
 		};

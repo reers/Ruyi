@@ -5,14 +5,17 @@ let package = Package(
     name: "Ruyi",
     platforms: [
         .iOS(.v13),
-        .macOS(.v10_15)
+        .macOS(.v10_15),
+        .tvOS(.v13),
+        .watchOS(.v7),
+        .visionOS(.v1)
     ],
     products: [
         .library(name: "Ruyi", targets: ["Ruyi"])
     ],
     dependencies: [
         // SVG-trimmed ThorVG binary (CPU + SVG + C API). Personal fork — not official Lottie package.
-        .package(url: "https://github.com/vnixx/thorvg.swift.git", from: "0.0.1")
+        .package(url: "https://github.com/vnixx/thorvg.swift.git", from: "0.0.3")
     ],
     targets: [
         .target(

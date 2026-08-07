@@ -9,8 +9,11 @@ Scale and tint your own SVGs — **no built-in icon set**.
 
 - iOS 13+ (arm64 / Simulator arm64)
 - macOS 10.15+ (Apple Silicon)
+- tvOS 13+ (arm64 / Simulator arm64)
+- watchOS 7+ (arm64 / Simulator arm64)
+- visionOS 1+ (arm64 / Simulator arm64)
 
-> ThorVG binary currently ships Apple Silicon slices only (via [`vnixx/thorvg.swift`](https://github.com/vnixx/thorvg.swift)).
+> ThorVG binary ships Apple Silicon slices only (via [`vnixx/thorvg.swift`](https://github.com/vnixx/thorvg.swift) `0.0.3+`).
 
 ## Install (SPM)
 
@@ -61,6 +64,15 @@ Open `RuyiDemo/RuyiDemo.xcodeproj` in Xcode:
 |--------|----------|
 | **RuyiDemo-macOS** | macOS |
 | **RuyiDemo-iOS** | iOS Simulator / device |
+| **RuyiDemo-tvOS** | tvOS Simulator / device |
+| **RuyiDemo-watchOS** | watchOS Simulator / device |
+| **RuyiDemo-visionOS** | visionOS Simulator / device |
+
+Regenerate the Xcode project after editing `RuyiDemo/project.yml`:
+
+```bash
+cd RuyiDemo && xcodegen generate
+```
 
 Sample icons live in `RuyiDemo/Sources/RuyiDemo-macOS/Resources/Icons` (demo only — not part of the Ruyi library).
 

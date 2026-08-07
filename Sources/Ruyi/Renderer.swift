@@ -79,12 +79,12 @@ private func applyStyleCallback(paint: Tvg_Paint?, data: UnsafeMutableRawPointer
 
 private func resolvedScale(_ scale: CGFloat) -> CGFloat {
     if scale > 0 { return scale }
-#if canImport(UIKit)
-#if os(watchOS)
+#if os(visionOS)
+    return 2
+#elseif os(watchOS)
     return WKInterfaceDevice.current().screenScale
-#else
+#elseif canImport(UIKit)
     return UIScreen.main.scale
-#endif
 #elseif canImport(AppKit)
     return NSScreen.main?.backingScaleFactor ?? 2
 #else

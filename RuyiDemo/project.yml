@@ -4,6 +4,9 @@ options:
   deploymentTarget:
     macOS: "13.0"
     iOS: "16.0"
+    tvOS: "16.0"
+    watchOS: "9.0"
+    visionOS: "1.0"
   createIntermediateGroups: true
   groupSortPosition: top
 packages:
@@ -68,6 +71,95 @@ targets:
         CODE_SIGNING_ALLOWED: true
         CODE_SIGNING_REQUIRED: false
         SUPPORTS_MACCATALYST: false
+    dependencies:
+      - package: Ruyi
+        product: Ruyi
+    scheme:
+      testTargets: []
+
+  RuyiDemo-tvOS:
+    type: application
+    platform: tvOS
+    sources:
+      - path: Sources/RuyiDemo-tvOS
+      - path: Sources/RuyiDemo-macOS/IconCatalog.swift
+      - path: Sources/RuyiDemo-macOS/Resources/Icons
+        type: folder
+        buildPhase: resources
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.qianshou.RuyiDemo.tvos
+        PRODUCT_NAME: RuyiDemo-tvOS
+        TVOS_DEPLOYMENT_TARGET: "16.0"
+        INFOPLIST_FILE: Info-tvOS.plist
+        GENERATE_INFOPLIST_FILE: false
+        LD_RUNPATH_SEARCH_PATHS:
+          - "$(inherited)"
+          - "@executable_path/Frameworks"
+        CODE_SIGN_IDENTITY: "-"
+        CODE_SIGNING_ALLOWED: true
+        CODE_SIGNING_REQUIRED: false
+        TARGETED_DEVICE_FAMILY: "3"
+    dependencies:
+      - package: Ruyi
+        product: Ruyi
+    scheme:
+      testTargets: []
+
+  RuyiDemo-watchOS:
+    type: application
+    platform: watchOS
+    sources:
+      - path: Sources/RuyiDemo-watchOS
+      - path: Sources/RuyiDemo-macOS/IconCatalog.swift
+      - path: Sources/RuyiDemo-macOS/Resources/Icons
+        type: folder
+        buildPhase: resources
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.qianshou.RuyiDemo.watchos
+        PRODUCT_NAME: RuyiDemo-watchOS
+        WATCHOS_DEPLOYMENT_TARGET: "9.0"
+        INFOPLIST_FILE: Info-watchOS.plist
+        GENERATE_INFOPLIST_FILE: false
+        LD_RUNPATH_SEARCH_PATHS:
+          - "$(inherited)"
+          - "@executable_path/Frameworks"
+        CODE_SIGN_IDENTITY: "-"
+        CODE_SIGNING_ALLOWED: true
+        CODE_SIGNING_REQUIRED: false
+        TARGETED_DEVICE_FAMILY: "4"
+        SDKROOT: watchos
+    dependencies:
+      - package: Ruyi
+        product: Ruyi
+    scheme:
+      testTargets: []
+
+  RuyiDemo-visionOS:
+    type: application
+    platform: visionOS
+    sources:
+      - path: Sources/RuyiDemo-visionOS
+      - path: Sources/RuyiDemo-macOS/IconCatalog.swift
+      - path: Sources/RuyiDemo-macOS/Resources/Icons
+        type: folder
+        buildPhase: resources
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.qianshou.RuyiDemo.visionos
+        PRODUCT_NAME: RuyiDemo-visionOS
+        XROS_DEPLOYMENT_TARGET: "1.0"
+        INFOPLIST_FILE: Info-visionOS.plist
+        GENERATE_INFOPLIST_FILE: false
+        LD_RUNPATH_SEARCH_PATHS:
+          - "$(inherited)"
+          - "@executable_path/Frameworks"
+        CODE_SIGN_IDENTITY: "-"
+        CODE_SIGNING_ALLOWED: true
+        CODE_SIGNING_REQUIRED: false
+        TARGETED_DEVICE_FAMILY: "7"
+        SDKROOT: xros
     dependencies:
       - package: Ruyi
         product: Ruyi
