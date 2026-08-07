@@ -8,7 +8,7 @@ let package = Package(
         .iOS(.v16)
     ],
     dependencies: [
-        .package(name: "Ruyi", path: "../")
+        .package(name: "Ruyi", path: "../../")
     ],
     targets: [
         // macOS CLI/SPM fallback. Prefer RuyiDemo.xcodeproj schemes in Xcode.

@@ -39,16 +39,16 @@
 		1976ECE41E64CC3EF711F6FD /* RuyiDemoWatchOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuyiDemoWatchOSApp.swift; sourceTree = "<group>"; };
 		25524E1F7A84469B200F58B5 /* IconCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconCatalog.swift; sourceTree = "<group>"; };
 		26CE0C477FF55C6A5DF81734 /* RuyiDemoTVOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuyiDemoTVOSApp.swift; sourceTree = "<group>"; };
-		344E14E40EBADDBC85C8065A /* RuyiDemo-visionOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RuyiDemo-visionOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		344E14E40EBADDBC85C8065A /* RuyiDemo-visionOS.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = "RuyiDemo-visionOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		54E3F95BF6F5BF3323038363 /* RuyiDemo-watchOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RuyiDemo-watchOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		62DF3456CBA99BC1391F70EB /* RuyiDemoVisionOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuyiDemoVisionOSApp.swift; sourceTree = "<group>"; };
 		8DD20B1733568139AADA0801 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		8EAFC9F2B539117576A34E74 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		976B0E56C45B77DFCBBF5208 /* RuyiDemo-macOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RuyiDemo-macOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		A89789BE89D361F5E08C4E8A /* Ruyi */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Ruyi; path = ..; sourceTree = SOURCE_ROOT; };
+		A89789BE89D361F5E08C4E8A /* Ruyi */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Ruyi; path = ../..; sourceTree = SOURCE_ROOT; };
 		D5D0BB3E648D0F765F351EE4 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		D6323B099D346D336F2E3882 /* RuyiDemo-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RuyiDemo-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		DDFBABB4843EEB6BB9E951BD /* RuyiDemo-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RuyiDemo-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D6323B099D346D336F2E3882 /* RuyiDemo-iOS.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = "RuyiDemo-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DDFBABB4843EEB6BB9E951BD /* RuyiDemo-tvOS.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = "RuyiDemo-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DFE067FE44292D56BC3577EE /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		EE134C8C4A7AB7D4A03569BD /* Icons */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Icons; path = "Sources/RuyiDemo-macOS/Resources/Icons"; sourceTree = SOURCE_ROOT; };
 		F35B5921A7F0783630A9CD51 /* RuyiDemoMacOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuyiDemoMacOSApp.swift; sourceTree = "<group>"; };
@@ -306,6 +306,8 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+				};
 			};
 			buildConfigurationList = D6A188212C822FBE2233802A /* Build configuration list for PBXProject "RuyiDemo" */;
 			developmentRegion = en;
@@ -317,7 +319,7 @@
 			mainGroup = C88458DB7E1D6450E7B21B9A;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				32EB8275CDF9FA0F205CCD6D /* XCLocalSwiftPackageReference "..//" */,
+				AE4954D139A65522FC68CF5A /* XCLocalSwiftPackageReference "../..//" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = EA45BD3418BD959BE92F5353 /* Products */;
@@ -446,7 +448,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.phoenix.RuyiDemo.macos;
+				PRODUCT_BUNDLE_IDENTIFIER = com.qianshou.RuyiDemo.macos;
 				PRODUCT_NAME = "RuyiDemo-macOS";
 				SDKROOT = macosx;
 			};
@@ -466,7 +468,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.phoenix.RuyiDemo.ios;
+				PRODUCT_BUNDLE_IDENTIFIER = com.qianshou.RuyiDemo.ios;
 				PRODUCT_NAME = "RuyiDemo-iOS";
 				SDKROOT = iphoneos;
 				SUPPORTS_MACCATALYST = NO;
@@ -487,7 +489,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.phoenix.RuyiDemo.watchos;
+				PRODUCT_BUNDLE_IDENTIFIER = com.qianshou.RuyiDemo.watchos;
 				PRODUCT_NAME = "RuyiDemo-watchOS";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
@@ -512,7 +514,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.phoenix.RuyiDemo.macos;
+				PRODUCT_BUNDLE_IDENTIFIER = com.qianshou.RuyiDemo.macos;
 				PRODUCT_NAME = "RuyiDemo-macOS";
 				SDKROOT = macosx;
 			};
@@ -531,7 +533,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.phoenix.RuyiDemo.watchos;
+				PRODUCT_BUNDLE_IDENTIFIER = com.qianshou.RuyiDemo.watchos;
 				PRODUCT_NAME = "RuyiDemo-watchOS";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
@@ -554,7 +556,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.phoenix.RuyiDemo.tvos;
+				PRODUCT_BUNDLE_IDENTIFIER = com.qianshou.RuyiDemo.tvos;
 				PRODUCT_NAME = "RuyiDemo-tvOS";
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
@@ -634,7 +636,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.phoenix.RuyiDemo.visionos;
+				PRODUCT_BUNDLE_IDENTIFIER = com.qianshou.RuyiDemo.visionos;
 				PRODUCT_NAME = "RuyiDemo-visionOS";
 				SDKROOT = xros;
 				TARGETED_DEVICE_FAMILY = 7;
@@ -656,7 +658,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.phoenix.RuyiDemo.ios;
+				PRODUCT_BUNDLE_IDENTIFIER = com.qianshou.RuyiDemo.ios;
 				PRODUCT_NAME = "RuyiDemo-iOS";
 				SDKROOT = iphoneos;
 				SUPPORTS_MACCATALYST = NO;
@@ -677,7 +679,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.phoenix.RuyiDemo.visionos;
+				PRODUCT_BUNDLE_IDENTIFIER = com.qianshou.RuyiDemo.visionos;
 				PRODUCT_NAME = "RuyiDemo-visionOS";
 				SDKROOT = xros;
 				TARGETED_DEVICE_FAMILY = 7;
@@ -765,7 +767,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.phoenix.RuyiDemo.tvos;
+				PRODUCT_BUNDLE_IDENTIFIER = com.qianshou.RuyiDemo.tvos;
 				PRODUCT_NAME = "RuyiDemo-tvOS";
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
@@ -833,9 +835,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		32EB8275CDF9FA0F205CCD6D /* XCLocalSwiftPackageReference "..//" */ = {
+		AE4954D139A65522FC68CF5A /* XCLocalSwiftPackageReference "../..//" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = "..//";
+			relativePath = "../..//";
 		};
 /* End XCLocalSwiftPackageReference section */
 
