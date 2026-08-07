@@ -31,11 +31,7 @@ let options = Ruyi.Options(
     strokeWidth: 2
 )
 
-// Namespace API
 let image = Ruyi.image(data: svgData, options: options)
-
-// Or RuyiImage extension (UIImage / NSImage typealias)
-let icon = RuyiImage.ruyi(data: svgData, options: options)
 ```
 
 Also:
@@ -43,7 +39,6 @@ Also:
 ```swift
 Ruyi.image(contentsOf: fileURL, options: ...)
 Ruyi.image(named: "icon", in: .module, options: ...)
-RuyiImage.ruyi(named: "icon", options: ...)
 ```
 
 ### Do not use Asset Catalog

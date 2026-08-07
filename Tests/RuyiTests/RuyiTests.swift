@@ -25,7 +25,7 @@ final class RuyiTests: XCTestCase {
 #elseif canImport(AppKit)
         let color = NSColor.systemRed
 #endif
-        let image = RuyiImage.ruyi(
+        let image = Ruyi.image(
             data: data,
             options: .init(
                 size: CGSize(width: 48, height: 48),

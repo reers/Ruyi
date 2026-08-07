@@ -224,7 +224,7 @@ struct ContentView: View {
         DispatchQueue.global(qos: .userInteractive).async {
             var images = [NSImage?](repeating: nil, count: icons.count)
             DispatchQueue.concurrentPerform(iterations: icons.count) { index in
-                images[index] = RuyiImage.ruyi(data: icons[index].data, options: options)
+                images[index] = Ruyi.image(data: icons[index].data, options: options)
             }
 
             var next: [String: NSImage] = [:]
