@@ -26,7 +26,7 @@
 		976B0E56C45B77DFCBBF5208 /* RuyiDemo-macOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RuyiDemo-macOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A89789BE89D361F5E08C4E8A /* Ruyi */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Ruyi; path = ..; sourceTree = SOURCE_ROOT; };
 		D5D0BB3E648D0F765F351EE4 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		D6323B099D346D336F2E3882 /* RuyiDemo-iOS.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = "RuyiDemo-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D6323B099D346D336F2E3882 /* RuyiDemo-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RuyiDemo-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE134C8C4A7AB7D4A03569BD /* Icons */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Icons; path = "Sources/RuyiDemo-macOS/Resources/Icons"; sourceTree = SOURCE_ROOT; };
 		F35B5921A7F0783630A9CD51 /* RuyiDemoMacOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuyiDemoMacOSApp.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -165,8 +165,6 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
-				TargetAttributes = {
-				};
 			};
 			buildConfigurationList = D6A188212C822FBE2233802A /* Build configuration list for PBXProject "RuyiDemo" */;
 			developmentRegion = en;
@@ -240,8 +238,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGNING_ALLOWED = YES;
 				CODE_SIGNING_REQUIRED = NO;
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 8TCNQ547JF;
 				ENABLE_HARDENED_RUNTIME = NO;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Info.plist;
@@ -250,8 +250,9 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.qianshou.RuyiDemo.macos;
+				PRODUCT_BUNDLE_IDENTIFIER = com.phoenix.RuyiDemo.macos;
 				PRODUCT_NAME = "RuyiDemo-macOS";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -262,7 +263,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGNING_ALLOWED = YES;
 				CODE_SIGNING_REQUIRED = NO;
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 8TCNQ547JF;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "Info-iOS.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
@@ -270,8 +273,9 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.qianshou.RuyiDemo.ios;
+				PRODUCT_BUNDLE_IDENTIFIER = com.phoenix.RuyiDemo.ios;
 				PRODUCT_NAME = "RuyiDemo-iOS";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				SUPPORTS_MACCATALYST = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -284,8 +288,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGNING_ALLOWED = YES;
 				CODE_SIGNING_REQUIRED = NO;
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 8TCNQ547JF;
 				ENABLE_HARDENED_RUNTIME = NO;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Info.plist;
@@ -294,8 +300,9 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.qianshou.RuyiDemo.macos;
+				PRODUCT_BUNDLE_IDENTIFIER = com.phoenix.RuyiDemo.macos;
 				PRODUCT_NAME = "RuyiDemo-macOS";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -362,7 +369,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGNING_ALLOWED = YES;
 				CODE_SIGNING_REQUIRED = NO;
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 8TCNQ547JF;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "Info-iOS.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
@@ -370,8 +379,9 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.qianshou.RuyiDemo.ios;
+				PRODUCT_BUNDLE_IDENTIFIER = com.phoenix.RuyiDemo.ios;
 				PRODUCT_NAME = "RuyiDemo-iOS";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				SUPPORTS_MACCATALYST = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
