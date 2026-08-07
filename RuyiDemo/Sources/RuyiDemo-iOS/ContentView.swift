@@ -17,16 +17,16 @@ struct ContentView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            controls
-                .padding(.horizontal, 20)
-                .padding(.top, 16)
-                .padding(.bottom, 12)
-                .background(Color(white: 0.11))
-
             iconGrid
                 .padding(12)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(Color(white: 0.16))
+
+            controls
+                .padding(.horizontal, 20)
+                .padding(.top, 12)
+                .padding(.bottom, 16)
+                .background(Color(white: 0.11))
         }
         .preferredColorScheme(.dark)
         .onAppear(perform: requestRender)
