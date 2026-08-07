@@ -1,0 +1,495 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0CCC46D8041FBBBDB6A41C03 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5D0BB3E648D0F765F351EE4 /* ContentView.swift */; };
+		2EE6BDA3FF2E9F0FF2E45DE9 /* IconCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25524E1F7A84469B200F58B5 /* IconCatalog.swift */; };
+		36B5ECFCE29F4B64F71FC109 /* RuyiDemoMacOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F35B5921A7F0783630A9CD51 /* RuyiDemoMacOSApp.swift */; };
+		5EA55A79604357F8B7E466A4 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DD20B1733568139AADA0801 /* ContentView.swift */; };
+		788344F3B3262EF851314696 /* RuyiDemoIOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01E3E0CC9F6D8093C2A8C3B0 /* RuyiDemoIOSApp.swift */; };
+		9238891503899FF9F476732A /* Icons in Resources */ = {isa = PBXBuildFile; fileRef = EE134C8C4A7AB7D4A03569BD /* Icons */; };
+		A0647E951B9344EE068D3F10 /* Icons in Resources */ = {isa = PBXBuildFile; fileRef = EE134C8C4A7AB7D4A03569BD /* Icons */; };
+		CA784F15667B541206258B65 /* Ruyi in Frameworks */ = {isa = PBXBuildFile; productRef = 782D0306C7781CEB95B54DE6 /* Ruyi */; };
+		E1A087356A02143A47C6CB83 /* IconCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25524E1F7A84469B200F58B5 /* IconCatalog.swift */; };
+		EA4D7BB8E65DC362A17EA85F /* Ruyi in Frameworks */ = {isa = PBXBuildFile; productRef = DCEB8BE7FEDF949452066A43 /* Ruyi */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		01E3E0CC9F6D8093C2A8C3B0 /* RuyiDemoIOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuyiDemoIOSApp.swift; sourceTree = "<group>"; };
+		25524E1F7A84469B200F58B5 /* IconCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconCatalog.swift; sourceTree = "<group>"; };
+		8DD20B1733568139AADA0801 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		976B0E56C45B77DFCBBF5208 /* RuyiDemo-macOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RuyiDemo-macOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A89789BE89D361F5E08C4E8A /* Ruyi */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Ruyi; path = ..; sourceTree = SOURCE_ROOT; };
+		D5D0BB3E648D0F765F351EE4 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		D6323B099D346D336F2E3882 /* RuyiDemo-iOS.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = "RuyiDemo-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		EE134C8C4A7AB7D4A03569BD /* Icons */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Icons; path = "Sources/RuyiDemo-macOS/Resources/Icons"; sourceTree = SOURCE_ROOT; };
+		F35B5921A7F0783630A9CD51 /* RuyiDemoMacOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuyiDemoMacOSApp.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		684E9808795476A45E17169B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EA4D7BB8E65DC362A17EA85F /* Ruyi in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F4C3EACDDB3F28DF3B37034F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA784F15667B541206258B65 /* Ruyi in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		09583F92EB108E06829119B8 /* RuyiDemo-macOS */ = {
+			isa = PBXGroup;
+			children = (
+				5DE2DAB50B157C11DD0BBACE /* Resources */,
+				D5D0BB3E648D0F765F351EE4 /* ContentView.swift */,
+				25524E1F7A84469B200F58B5 /* IconCatalog.swift */,
+				F35B5921A7F0783630A9CD51 /* RuyiDemoMacOSApp.swift */,
+			);
+			path = "RuyiDemo-macOS";
+			sourceTree = "<group>";
+		};
+		0EA6F287D35DCBECADD4D5F3 /* RuyiDemo-iOS */ = {
+			isa = PBXGroup;
+			children = (
+				8DD20B1733568139AADA0801 /* ContentView.swift */,
+				01E3E0CC9F6D8093C2A8C3B0 /* RuyiDemoIOSApp.swift */,
+			);
+			path = "RuyiDemo-iOS";
+			sourceTree = "<group>";
+		};
+		188943C682B4907A29174915 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				0EA6F287D35DCBECADD4D5F3 /* RuyiDemo-iOS */,
+				09583F92EB108E06829119B8 /* RuyiDemo-macOS */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		5DE2DAB50B157C11DD0BBACE /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				EE134C8C4A7AB7D4A03569BD /* Icons */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		AC32E21AC443ED7DA2BD6BB3 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				A89789BE89D361F5E08C4E8A /* Ruyi */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
+		C88458DB7E1D6450E7B21B9A = {
+			isa = PBXGroup;
+			children = (
+				AC32E21AC443ED7DA2BD6BB3 /* Packages */,
+				188943C682B4907A29174915 /* Sources */,
+				EA45BD3418BD959BE92F5353 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		EA45BD3418BD959BE92F5353 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D6323B099D346D336F2E3882 /* RuyiDemo-iOS.app */,
+				976B0E56C45B77DFCBBF5208 /* RuyiDemo-macOS.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1AA10DB935FE317F8B29E188 /* RuyiDemo-iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 90CEA912C4C3B7A897CBB2B3 /* Build configuration list for PBXNativeTarget "RuyiDemo-iOS" */;
+			buildPhases = (
+				FAA97026061A458BD80EBDEA /* Sources */,
+				BF51DCDD4FEAB7D0898603E5 /* Resources */,
+				F4C3EACDDB3F28DF3B37034F /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "RuyiDemo-iOS";
+			packageProductDependencies = (
+				782D0306C7781CEB95B54DE6 /* Ruyi */,
+			);
+			productName = "RuyiDemo-iOS";
+			productReference = D6323B099D346D336F2E3882 /* RuyiDemo-iOS.app */;
+			productType = "com.apple.product-type.application";
+		};
+		77532D92E9C3FE65AA48506A /* RuyiDemo-macOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E8C399D790D0DD6408E3572C /* Build configuration list for PBXNativeTarget "RuyiDemo-macOS" */;
+			buildPhases = (
+				14119206893007BB8981B1F9 /* Sources */,
+				29DA694F9BB426E12F78B043 /* Resources */,
+				684E9808795476A45E17169B /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "RuyiDemo-macOS";
+			packageProductDependencies = (
+				DCEB8BE7FEDF949452066A43 /* Ruyi */,
+			);
+			productName = "RuyiDemo-macOS";
+			productReference = 976B0E56C45B77DFCBBF5208 /* RuyiDemo-macOS.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		7FEEC9BAEC530A14D5ADC62C /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+				};
+			};
+			buildConfigurationList = D6A188212C822FBE2233802A /* Build configuration list for PBXProject "RuyiDemo" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = C88458DB7E1D6450E7B21B9A;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				32EB8275CDF9FA0F205CCD6D /* XCLocalSwiftPackageReference "..//" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = EA45BD3418BD959BE92F5353 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				1AA10DB935FE317F8B29E188 /* RuyiDemo-iOS */,
+				77532D92E9C3FE65AA48506A /* RuyiDemo-macOS */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		29DA694F9BB426E12F78B043 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A0647E951B9344EE068D3F10 /* Icons in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BF51DCDD4FEAB7D0898603E5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9238891503899FF9F476732A /* Icons in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		14119206893007BB8981B1F9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0CCC46D8041FBBBDB6A41C03 /* ContentView.swift in Sources */,
+				2EE6BDA3FF2E9F0FF2E45DE9 /* IconCatalog.swift in Sources */,
+				36B5ECFCE29F4B64F71FC109 /* RuyiDemoMacOSApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FAA97026061A458BD80EBDEA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5EA55A79604357F8B7E466A4 /* ContentView.swift in Sources */,
+				E1A087356A02143A47C6CB83 /* IconCatalog.swift in Sources */,
+				788344F3B3262EF851314696 /* RuyiDemoIOSApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		14EA1AC8AABF004A1ABA297C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_HARDENED_RUNTIME = NO;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.qianshou.RuyiDemo.macos;
+				PRODUCT_NAME = "RuyiDemo-macOS";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		1BE6ABC9C21BC2E561E25614 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "-";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "Info-iOS.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.qianshou.RuyiDemo.ios;
+				PRODUCT_NAME = "RuyiDemo-iOS";
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		4EB9BFF2657D365B45F48770 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_HARDENED_RUNTIME = NO;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.qianshou.RuyiDemo.macos;
+				PRODUCT_NAME = "RuyiDemo-macOS";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		640AEC6F2B3CFF8C0BEC1468 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Release;
+		};
+		B108CE6216653B2966A431FE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "-";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "Info-iOS.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.qianshou.RuyiDemo.ios;
+				PRODUCT_NAME = "RuyiDemo-iOS";
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		D248404F6728D0556B84904D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		90CEA912C4C3B7A897CBB2B3 /* Build configuration list for PBXNativeTarget "RuyiDemo-iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B108CE6216653B2966A431FE /* Debug */,
+				1BE6ABC9C21BC2E561E25614 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		D6A188212C822FBE2233802A /* Build configuration list for PBXProject "RuyiDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D248404F6728D0556B84904D /* Debug */,
+				640AEC6F2B3CFF8C0BEC1468 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		E8C399D790D0DD6408E3572C /* Build configuration list for PBXNativeTarget "RuyiDemo-macOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4EB9BFF2657D365B45F48770 /* Debug */,
+				14EA1AC8AABF004A1ABA297C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		32EB8275CDF9FA0F205CCD6D /* XCLocalSwiftPackageReference "..//" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "..//";
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		782D0306C7781CEB95B54DE6 /* Ruyi */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Ruyi;
+		};
+		DCEB8BE7FEDF949452066A43 /* Ruyi */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Ruyi;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 7FEEC9BAEC530A14D5ADC62C /* Project object */;
+}

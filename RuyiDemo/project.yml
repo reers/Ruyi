@@ -1,0 +1,75 @@
+name: RuyiDemo
+options:
+  bundleIdPrefix: com.qianshou
+  deploymentTarget:
+    macOS: "13.0"
+    iOS: "16.0"
+  createIntermediateGroups: true
+  groupSortPosition: top
+packages:
+  Ruyi:
+    path: ../
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+targets:
+  RuyiDemo-macOS:
+    type: application
+    platform: macOS
+    sources:
+      - path: Sources/RuyiDemo-macOS
+        excludes:
+          - Resources
+      - path: Sources/RuyiDemo-macOS/Resources/Icons
+        type: folder
+        buildPhase: resources
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.qianshou.RuyiDemo.macos
+        PRODUCT_NAME: RuyiDemo-macOS
+        MACOSX_DEPLOYMENT_TARGET: "13.0"
+        INFOPLIST_FILE: Info.plist
+        GENERATE_INFOPLIST_FILE: false
+        LD_RUNPATH_SEARCH_PATHS:
+          - "$(inherited)"
+          - "@executable_path/../Frameworks"
+        CODE_SIGN_IDENTITY: "-"
+        CODE_SIGNING_ALLOWED: true
+        CODE_SIGNING_REQUIRED: false
+        COMBINE_HIDPI_IMAGES: true
+        ENABLE_HARDENED_RUNTIME: false
+    dependencies:
+      - package: Ruyi
+        product: Ruyi
+    scheme:
+      testTargets: []
+
+  RuyiDemo-iOS:
+    type: application
+    platform: iOS
+    sources:
+      - path: Sources/RuyiDemo-iOS
+      - path: Sources/RuyiDemo-macOS/IconCatalog.swift
+      - path: Sources/RuyiDemo-macOS/Resources/Icons
+        type: folder
+        buildPhase: resources
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.qianshou.RuyiDemo.ios
+        PRODUCT_NAME: RuyiDemo-iOS
+        IPHONEOS_DEPLOYMENT_TARGET: "16.0"
+        TARGETED_DEVICE_FAMILY: "1,2"
+        INFOPLIST_FILE: Info-iOS.plist
+        GENERATE_INFOPLIST_FILE: false
+        LD_RUNPATH_SEARCH_PATHS:
+          - "$(inherited)"
+          - "@executable_path/Frameworks"
+        CODE_SIGN_IDENTITY: "-"
+        CODE_SIGNING_ALLOWED: true
+        CODE_SIGNING_REQUIRED: false
+        SUPPORTS_MACCATALYST: false
+    dependencies:
+      - package: Ruyi
+        product: Ruyi
+    scheme:
+      testTargets: []
