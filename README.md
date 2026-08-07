@@ -16,7 +16,7 @@ Scale and tint your own SVGs — **no built-in icon set**.
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/<you>/Ruyi.git", from: "0.1.0")
+    .package(url: "https://github.com/reers/Ruyi.git", from: "0.1.0")
 ]
 ```
 
@@ -45,6 +45,16 @@ Ruyi.image(contentsOf: fileURL, options: ...)
 Ruyi.image(named: "icon", in: .module, options: ...)
 RuyiImage.ruyi(named: "icon", options: ...)
 ```
+
+### Do not use Asset Catalog
+
+Ruyi needs the **original SVG source** (file path, bundle resource, or in-memory XML/`Data`).
+
+**Do not put SVGs in an Xcode Asset Catalog.** Assets compile SVG into bitmaps (or Apple’s internal vector form for `UIImage`). Neither exposes the SVG XML, so Ruyi / ThorVG cannot parse them — with or without “Preserve Vector Data”.
+
+Put `.svg` files in the app / package **bundle** (Copy Bundle Resources / SPM `resources`) and load via `Ruyi.image(named:in:)` / `contentsOf:` / `data:`.
+
+Asset Catalog is fine for system `UIImage` / SwiftUI `Image`; use a separate bundle resource for Ruyi.
 
 ## Demo
 

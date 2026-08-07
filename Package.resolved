@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "thorvg.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/vnixx/thorvg.swift.git",
+      "state" : {
+        "revision" : "75b8f4bac4c8c9349ebb89c9ace53f713c31a39e",
+        "version" : "0.0.1"
+      }
+    }
+  ],
+  "version" : 2
+}
