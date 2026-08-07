@@ -7,11 +7,10 @@ Scale and tint your own SVGs — **no built-in icon set**.
 
 ## Platforms
 
-- iOS 13+
-- macOS 10.15+
-- tvOS 13+
-- watchOS 7+
-- visionOS 1+
+- iOS 13+ (arm64 / Simulator arm64)
+- macOS 10.15+ (Apple Silicon)
+
+> ThorVG binary currently ships Apple Silicon slices only (via [`vnixx/thorvg.swift`](https://github.com/vnixx/thorvg.swift)).
 
 ## Install (SPM)
 
@@ -64,8 +63,8 @@ macOS CLI fallback: `cd RuyiDemo && ./run.sh`
 
 ## Engine
 
-Vendored [ThorVG](https://github.com/thorvg/thorvg) (CPU raster + SVG loader + C API), wrapped by Swift.
+[ThorVG](https://github.com/thorvg/thorvg) via SPM binary package [`vnixx/thorvg.swift`](https://github.com/vnixx/thorvg.swift) (CPU raster + SVG + C API).
 
 ## License
 
-MIT (see `LICENSE`). ThorVG retains its own license in `Sources/CThorVG`.
+MIT (see `LICENSE`).

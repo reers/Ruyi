@@ -1,6 +1,6 @@
 import Foundation
 import CoreGraphics
-import CThorVG
+import ThorVG
 
 #if os(watchOS)
 import WatchKit
