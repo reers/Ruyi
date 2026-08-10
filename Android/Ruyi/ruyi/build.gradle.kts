@@ -7,10 +7,36 @@ plugins {
 android {
     namespace = "io.github.reers.ruyi"
     compileSdk = 35
+    ndkVersion = "27.2.12479018"
 
     defaultConfig {
         minSdk = 24
         consumerProguardFiles("consumer-rules.pro")
+
+        ndk {
+            abiFilters += listOf("arm64-v8a")
+        }
+
+        externalNativeBuild {
+            cmake {
+                cppFlags += "-std=c++17"
+                arguments += listOf(
+                    "-DANDROID_STL=c++_shared",
+                )
+            }
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path = file("src/main/cpp/CMakeLists.txt")
+            version = "3.22.1"
+        }
+    }
+
+    buildFeatures {
+        // Consume Prefab headers / libthorvg.so from io.github.vnixx:thorvg.
+        prefab = true
     }
 
     compileOptions {
@@ -21,10 +47,20 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
+
+    packaging {
+        jniLibs {
+            // Prefab links against thorvg; do not also ship its .so from this AAR.
+            // Consumers get libthorvg.so from the transitive io.github.vnixx:thorvg AAR.
+            excludes += setOf("**/libthorvg.so")
+            pickFirsts += "**/libc++_shared.so"
+        }
+    }
 }
 
 dependencies {
-    api("io.github.vnixx:thorvg:0.0.1")
+    // Prefab C API only. JNI + Kotlin bridge live in this module.
+    api("io.github.vnixx:thorvg:1.1.0")
 }
 
 mavenPublishing {

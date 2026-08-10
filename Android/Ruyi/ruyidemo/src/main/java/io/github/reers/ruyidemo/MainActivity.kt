@@ -51,7 +51,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.reers.ruyi.Ruyi
-import io.github.vnixx.thorvg.ThorVG
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.collectLatest
@@ -65,10 +64,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        ThorVG.engineInit()
         setContent {
             MaterialTheme(colorScheme = darkColorScheme()) {
-                DemoScreen(engineVersion = ThorVG.version())
+                DemoScreen(engineVersion = Ruyi.version())
             }
         }
     }

@@ -33,13 +33,13 @@ Android/
 - watchOS 7+ (arm64 / Simulator arm64)
 - visionOS 1+ (arm64 / Simulator arm64)
 
-> ThorVG binary ships Apple Silicon slices only (via [`vnixx/thorvg.swift`](https://github.com/vnixx/thorvg.swift) `0.0.3+`).
+> ThorVG binary ships Apple Silicon slices only (via [`vnixx/thorvg.ruyi`](https://github.com/vnixx/thorvg.ruyi) `1.1.0+`).
 
 ### Install
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/reers/Ruyi.git", from: "0.1.0")
+    .package(url: "https://github.com/reers/Ruyi.git", from: "1.0.0")
 ]
 ```
 
@@ -92,7 +92,7 @@ macOS CLI fallback: `cd Apple/RuyiDemo && ./run.sh`
 
 ### Engine
 
-[ThorVG](https://github.com/thorvg/thorvg) via SPM binary package [`vnixx/thorvg.swift`](https://github.com/vnixx/thorvg.swift) (CPU raster + SVG + C API).
+[ThorVG](https://github.com/thorvg/thorvg) via SPM binary package [`vnixx/thorvg.ruyi`](https://github.com/vnixx/thorvg.ruyi) (CPU raster + SVG + C API).
 
 ---
 
@@ -107,11 +107,9 @@ macOS CLI fallback: `cd Apple/RuyiDemo && ./run.sh`
 
 ```kotlin
 dependencies {
-    implementation("io.github.reers:ruyi:0.0.1")
+    implementation("io.github.reers:ruyi:1.0.0")
 }
 ```
-
-> Until the first Central publish, use a local project dependency or `publishToMavenLocal` (see [`Android/Ruyi/PUBLISHING.md`](Android/Ruyi/PUBLISHING.md)).
 
 ### Usage
 
@@ -140,7 +138,7 @@ Open `Android/Ruyi` in Android Studio. Sample icons live in `ruyidemo/src/main/a
 
 ### Engine
 
-[ThorVG](https://github.com/thorvg/thorvg) via Maven [`io.github.vnixx:thorvg`](https://github.com/vnixx/thorvg.android) (CPU raster + SVG + C API + JNI).
+[ThorVG](https://github.com/thorvg/thorvg) via Maven [`io.github.vnixx:thorvg`](https://central.sonatype.com/artifact/io.github.vnixx/thorvg) `1.1.0+` (CPU raster + SVG + C API Prefab; Kotlin/JNI bridge lives in Ruyi).
 
 ### Publishing
 

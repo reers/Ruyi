@@ -15,13 +15,13 @@ let package = Package(
     ],
     dependencies: [
         // SVG-trimmed ThorVG binary (CPU + SVG + C API). Personal fork — not official Lottie package.
-        .package(url: "https://github.com/vnixx/thorvg.swift.git", from: "0.0.3")
+        .package(url: "https://github.com/vnixx/thorvg.ruyi.git", from: "1.1.0")
     ],
     targets: [
         .target(
             name: "Ruyi",
             dependencies: [
-                .product(name: "ThorVG", package: "thorvg.swift")
+                .product(name: "ThorVG", package: "thorvg.ruyi")
             ],
             path: "Apple/Sources/Ruyi",
             linkerSettings: [

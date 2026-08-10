@@ -1,0 +1,6 @@
+{
+  global:
+    Java_io_github_reers_ruyi_ThorVG_*;
+  local:
+    *;
+};

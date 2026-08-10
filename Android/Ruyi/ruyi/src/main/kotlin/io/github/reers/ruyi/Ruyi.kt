@@ -2,7 +2,6 @@ package io.github.reers.ruyi
 
 import android.content.Context
 import android.graphics.Bitmap
-import io.github.vnixx.thorvg.ThorVG
 import java.nio.charset.StandardCharsets
 import kotlin.math.roundToInt
 
@@ -10,9 +9,14 @@ import kotlin.math.roundToInt
  * Cross-platform SVG load & render runtime (Android).
  *
  * Ships no built-in icons — pass your own SVG data / assets.
- * Thin Kotlin wrapper over [ThorVG] with Ruyi-aligned stroke semantics.
+ * Kotlin API over ThorVG C API via an in-module JNI bridge
+ * (`io.github.vnixx:thorvg` Prefab).
  */
 object Ruyi {
+
+    /** ThorVG engine version string. */
+    @JvmStatic
+    fun version(): String = ThorVG.version()
 
     /**
      * Rendering options for SVG → bitmap conversion.

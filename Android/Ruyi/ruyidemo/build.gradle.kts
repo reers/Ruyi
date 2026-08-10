@@ -7,6 +7,7 @@ plugins {
 android {
     namespace = "io.github.reers.ruyidemo"
     compileSdk = 35
+    ndkVersion = "27.2.12479018"
 
     defaultConfig {
         applicationId = "io.github.reers.ruyidemo"
@@ -41,7 +42,10 @@ android {
 
     packaging {
         jniLibs {
-            pickFirsts += "**/libc++_shared.so"
+            pickFirsts += setOf(
+                "**/libc++_shared.so",
+                "**/libthorvg.so",
+            )
         }
     }
 }
