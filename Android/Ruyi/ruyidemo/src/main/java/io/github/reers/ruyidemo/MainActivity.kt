@@ -52,12 +52,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.reers.ruyi.Ruyi
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.withContext
-import kotlin.coroutines.coroutineContext
 import kotlin.math.roundToInt
 
 class MainActivity : ComponentActivity() {
@@ -116,11 +117,17 @@ private fun DemoScreen(engineVersion: String) {
         }
     }
 
-    // Real-time: render as slider moves. conflate keeps only the latest request
-    // while a frame is in flight (no "wait until finger up", no backlog).
+    // Real-time: UI size follows the slider; raster requests are quantized so we
+    // don't rebuild every fractional Compose tick. conflate drops backlog.
     LaunchedEffect(Unit) {
         snapshotFlow {
-            RenderRequest(icons, sizeDp, strokePt, hue, absoluteStroke)
+            RenderRequest(
+                icons = icons,
+                sizeDp = sizeDp.roundToInt().toFloat(),
+                strokePt = (strokePt * 10f).roundToInt() / 10f,
+                hue = hue.roundToInt().toFloat(),
+                absoluteStroke = absoluteStroke,
+            )
         }
             .distinctUntilChanged()
             .conflate()
@@ -137,12 +144,16 @@ private fun DemoScreen(engineVersion: String) {
                     density = density,
                 )
                 val rendered = withContext(Dispatchers.Default) {
-                    buildMap {
-                        for (item in req.icons) {
-                            coroutineContext.ensureActive()
-                            val bmp = Ruyi.image(item.svg, options)
-                            if (bmp != null) put(item.name, bmp)
-                        }
+                    coroutineScope {
+                        req.icons
+                            .map { item ->
+                                async {
+                                    item.name to Ruyi.image(item.svg, options)
+                                }
+                            }
+                            .awaitAll()
+                            .mapNotNull { (name, bmp) -> bmp?.let { name to it } }
+                            .toMap()
                     }
                 }
                 bitmaps = rendered
@@ -152,6 +163,7 @@ private fun DemoScreen(engineVersion: String) {
             }
     }
 
+    // Live scale (like Apple demo); bitmaps refresh on quantized RenderRequest.
     val iconDisplayDp = minOf(sizeDp, 76f)
 
     Column(
