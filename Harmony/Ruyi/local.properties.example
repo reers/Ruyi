@@ -1,0 +1,4 @@
+# Copy to local.properties and set your DevEco / OHOS SDK path.
+# Example (macOS DevEco default):
+# sdk.dir=/Users/YOUR_NAME/Library/Huawei/Sdk
+sdk.dir=

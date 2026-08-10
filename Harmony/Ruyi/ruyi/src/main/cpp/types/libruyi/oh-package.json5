@@ -1,0 +1,6 @@
+{
+  "name": "libruyi.so",
+  "types": "./index.d.ts",
+  "version": "1.0.0",
+  "description": "NAPI bindings for Ruyi (ThorVG C API bridge)"
+}

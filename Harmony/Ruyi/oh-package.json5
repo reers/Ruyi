@@ -1,0 +1,17 @@
+{
+  "modelVersion": "5.0.0",
+  "name": "ruyi-harmony",
+  "version": "1.0.0",
+  "description": "Ruyi SVG runtime for HarmonyOS (library + demo)",
+  "main": "",
+  "author": {
+    "name": "reers",
+    "email": "x.rhythm@qq.com",
+    "url": "https://github.com/reers"
+  },
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "@ohos/hypium": "1.0.19"
+  }
+}

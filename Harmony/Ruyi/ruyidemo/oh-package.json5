@@ -1,0 +1,11 @@
+{
+  "name": "ruyidemo",
+  "version": "1.0.0",
+  "description": "Ruyi HarmonyOS demo app",
+  "main": "",
+  "author": "reers",
+  "license": "MIT",
+  "dependencies": {
+    "@reers/ruyi": "file:../ruyi"
+  }
+}

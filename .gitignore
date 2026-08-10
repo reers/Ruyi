@@ -73,3 +73,14 @@ Android/**/local.properties
 Android/**/.idea/
 *.iml
 .cxx/
+
+# Harmony / OHPM
+Harmony/**/oh_modules/
+Harmony/**/build/
+Harmony/**/.hvigor/
+Harmony/**/.idea/
+Harmony/**/local.properties
+Harmony/**/oh-package-lock.json5
+Harmony/**/libs/native/
+Harmony/**/libs/*.har
+Harmony/**/BuildProfile.ets

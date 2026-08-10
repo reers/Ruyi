@@ -1,0 +1,10 @@
+{
+  "module": {
+    "name": "ruyi",
+    "type": "har",
+    "deviceTypes": [
+      "phone",
+      "tablet"
+    ]
+  }
+}
