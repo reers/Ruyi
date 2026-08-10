@@ -19,6 +19,10 @@ Android/
   Ruyi/                    # Open this folder in Android Studio
     ruyi/                  # Kotlin library → io.github.reers:ruyi
     ruyidemo/              # Compose demo
+Harmony/
+  Ruyi/                    # Open this folder in DevEco Studio
+    ruyi/                  # ArkTS + NAPI HAR → @reers/ruyi
+    ruyidemo/              # Demo HAP
 ```
 
 ---
@@ -143,6 +147,69 @@ Open `Android/Ruyi` in Android Studio. Sample icons live in `ruyidemo/src/main/a
 ### Publishing
 
 See [`Android/Ruyi/PUBLISHING.md`](Android/Ruyi/PUBLISHING.md). Coordinates: **`io.github.reers:ruyi`**.
+
+---
+
+## HarmonyOS (OHPM)
+
+### Platforms
+
+- HarmonyOS NEXT (API 12+ recommended)
+- Native ThorVG + Ruyi bridge ship **arm64-v8a** only (via [`@vnixx/thorvg`](https://ohpm.openharmony.cn/#/cn/detail/@vnixx/thorvg))
+
+### Install
+
+```bash
+ohpm install @reers/ruyi
+```
+
+Or in `oh-package.json5`:
+
+```json5
+"dependencies": {
+  "@reers/ruyi": "1.0.0"
+}
+```
+
+### Usage
+
+```ts
+import { Ruyi, RuyiOptions } from '@reers/ruyi';
+import { display } from '@kit.ArkUI';
+
+const density = display.getDefaultDisplaySync().densityDPI / 160;
+const options = new RuyiOptions(
+  24,                 // sizeVp
+  0xFFFF0000,         // color ARGB (optional)
+  2,                  // strokeWidth pt (optional)
+  true,               // absoluteStrokeWidth
+  24,                 // referenceSize
+  density,
+);
+
+const pixelMap = await Ruyi.image(svgString, options);
+// or: await Ruyi.imageBatch(svgStrings, options)
+```
+
+Engine lazy-inits on first render (no public `engineInit` / `engineTerm`).
+
+### Demo
+
+Open `Harmony/Ruyi` in DevEco Studio, then:
+
+```bash
+cd Harmony/Ruyi
+export DEVECO_SDK_HOME=/Applications/DevEco-Studio.app/Contents/sdk
+hvigorw assembleHap -p module=ruyidemo@default
+```
+
+More detail: [`Harmony/Ruyi/README.md`](Harmony/Ruyi/README.md).
+
+### Engine
+
+[ThorVG](https://github.com/thorvg/thorvg) via OHPM [`@vnixx/thorvg`](https://ohpm.openharmony.cn/#/cn/detail/@vnixx/thorvg) `1.1.0+` (CPU raster + SVG + C API HAR; ArkTS/NAPI bridge lives in Ruyi).
+
+Coordinates: **`@reers/ruyi`**.
 
 ---
 
