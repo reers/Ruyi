@@ -27,15 +27,13 @@ enum Renderer {
 // MARK: - Engine
 
 private enum ThorVGEngine {
-    private static let lock = NSLock()
-    private static var started = false
+    /// Thread-safe once. Avoids locking on every `image(...)` call under `concurrentPerform`.
+    private static let token: Void = {
+        _ = tvg_engine_init(0)
+    }()
 
     static func ensureStarted() {
-        lock.lock()
-        defer { lock.unlock() }
-        guard !started else { return }
-        _ = tvg_engine_init(0)
-        started = true
+        _ = token
     }
 }
 
@@ -150,6 +148,8 @@ private func render(svgBytes: UnsafePointer<CChar>, length: UInt32, options: Ruy
         }
     }
 
+    // Must copy: ThorVG SVG loader may retain/read past this call when copy=false
+    // (seen as EXC_BREAKPOINT under concurrent demo rasterization).
     let load = tvg_picture_load_data(picture, svgBytes, length, "svg", nil, true)
     guard load == TVG_RESULT_SUCCESS else { return nil }
 
@@ -194,18 +194,24 @@ private func render(svgBytes: UnsafePointer<CChar>, length: UInt32, options: Ruy
     guard let canvas = tvg_swcanvas_create(TVG_ENGINE_OPTION_NONE) else { return nil }
     defer { tvg_canvas_destroy(canvas) }
 
-    var buffer = [UInt32](repeating: 0, count: pixelW * pixelH)
-    let target = buffer.withUnsafeMutableBufferPointer { buf -> Tvg_Result in
-        guard let base = buf.baseAddress else { return TVG_RESULT_INVALID_ARGUMENT }
-        return tvg_swcanvas_set_target(
-            canvas,
-            base,
-            UInt32(pixelW),
-            UInt32(pixelW),
-            UInt32(pixelH),
-            TVG_COLORSPACE_ARGB8888
-        )
+    // Draw into owned malloc buffer (draw clears it). Avoids `[UInt32](repeating:0)` + Data copy.
+    let pixelCount = pixelW * pixelH
+    let pixels = UnsafeMutablePointer<UInt32>.allocate(capacity: pixelCount)
+    var pixelsOwned = true
+    defer {
+        if pixelsOwned {
+            pixels.deallocate()
+        }
     }
+
+    let target = tvg_swcanvas_set_target(
+        canvas,
+        pixels,
+        UInt32(pixelW),
+        UInt32(pixelW),
+        UInt32(pixelH),
+        TVG_COLORSPACE_ARGB8888
+    )
     guard target == TVG_RESULT_SUCCESS else { return nil }
 
     guard tvg_canvas_add(canvas, picture) == TVG_RESULT_SUCCESS else { return nil }
@@ -214,13 +220,45 @@ private func render(svgBytes: UnsafePointer<CChar>, length: UInt32, options: Ruy
     guard tvg_canvas_draw(canvas, true) == TVG_RESULT_SUCCESS else { return nil }
     guard tvg_canvas_sync(canvas) == TVG_RESULT_SUCCESS else { return nil }
 
-    return makeImage(buffer: buffer, width: pixelW, height: pixelH, scale: scale)
+    // Transfer pixel buffer ownership into the CGImage provider.
+    pixelsOwned = false
+    return makeImageTakingPixels(pixels, width: pixelW, height: pixelH, scale: scale)
 }
 
-private func makeImage(buffer: [UInt32], width: Int, height: Int, scale: CGFloat) -> RuyiImage? {
+/// Consumes `pixels` (UInt32 ARGB buffer) and releases it when the image provider is freed.
+private func makeImageTakingPixels(
+    _ pixels: UnsafeMutablePointer<UInt32>,
+    width: Int,
+    height: Int,
+    scale: CGFloat
+) -> RuyiImage? {
     let bytesPerRow = width * 4
-    let data = Data(bytes: buffer, count: height * bytesPerRow)
-    guard let provider = CGDataProvider(data: data as CFData) else { return nil }
+    let byteCount = height * bytesPerRow
+    let pixelCount = width * height
+
+    // Keep capacity alongside the buffer so release matches
+    // `UnsafeMutablePointer<UInt32>.allocate(capacity:)`.
+    let info = UnsafeMutablePointer<Int>.allocate(capacity: 1)
+    info.initialize(to: pixelCount)
+
+    guard let provider = CGDataProvider(
+        dataInfo: info,
+        data: pixels,
+        size: byteCount,
+        releaseData: { info, data, _ in
+            guard let info else { return }
+            let countPtr = info.assumingMemoryBound(to: Int.self)
+            let count = countPtr.pointee
+            countPtr.deinitialize(count: 1)
+            countPtr.deallocate()
+            data.bindMemory(to: UInt32.self, capacity: count).deallocate()
+        }
+    ) else {
+        info.deinitialize(count: 1)
+        info.deallocate()
+        pixels.deallocate()
+        return nil
+    }
 
     // ThorVG ARGB8888 (premultiplied): little-endian memory is B,G,R,A → matches
     // byteOrder32Little + premultipliedFirst.

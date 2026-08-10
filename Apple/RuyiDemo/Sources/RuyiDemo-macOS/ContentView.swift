@@ -13,6 +13,10 @@ struct ContentView: View {
     /// Bumps on every style change; stale async results are dropped.
     @State private var renderGeneration = 0
     @State private var renderBusy = false
+    /// Last size (pt) that was rasterized — live `size` still drives on-screen scale.
+    @State private var rasterSize: Double = 24
+    /// Avoid color → hex → color feedback scheduling duplicate renders.
+    @State private var suppressHexToColor = false
 
     private let defaults = StyleDefaults()
 
@@ -31,16 +35,23 @@ struct ContentView: View {
         .preferredColorScheme(.dark)
         .onAppear(perform: requestRender)
         .onChange(of: color) { _ in
+            suppressHexToColor = true
             syncHexFromColor()
+            suppressHexToColor = false
             requestRender()
         }
         .onChange(of: strokeWidth) { _ in requestRender() }
-        .onChange(of: size) { _ in requestRender() }
+        .onChange(of: size) { newValue in
+            // Live frame scale follows the slider; only re-raster when the integer pt changes.
+            let quantized = newValue.rounded()
+            guard quantized != rasterSize else { return }
+            rasterSize = quantized
+            requestRender()
+        }
         .onChange(of: absoluteStrokeWidth) { _ in requestRender() }
         .onChange(of: hexText) { newValue in
-            if let c = Color(hex: newValue) {
-                color = c
-            }
+            guard !suppressHexToColor, let c = Color(hex: newValue) else { return }
+            color = c
         }
     }
 
@@ -147,28 +158,11 @@ struct ContentView: View {
             let columns = [GridItem(.adaptive(minimum: 72, maximum: 96), spacing: 12)]
             LazyVGrid(columns: columns, spacing: 16) {
                 ForEach(IconCatalog.icons) { icon in
-                    VStack(spacing: 8) {
-                        ZStack {
-                            RoundedRectangle(cornerRadius: 12)
-                                .fill(Color.white.opacity(0.04))
-                                .frame(width: 72, height: 72)
-                            if let image = rendered[icon.name] {
-                                // Follow the live slider size for Lucide-like immediacy;
-                                // background re-rasterizes as fast as the CPU allows.
-                                Image(nsImage: image)
-                                    .resizable()
-                                    .interpolation(.high)
-                                    .frame(width: size, height: size)
-                            } else {
-                                ProgressView()
-                                    .controlSize(.mini)
-                            }
-                        }
-                        Text(icon.name)
-                            .font(.system(size: 10))
-                            .foregroundStyle(.white.opacity(0.45))
-                            .lineLimit(1)
-                    }
+                    IconCell(
+                        name: icon.name,
+                        image: rendered[icon.name],
+                        displaySize: size
+                    )
                 }
             }
             .padding(8)
@@ -181,15 +175,20 @@ struct ContentView: View {
                         .fill(Color(nsColor: .init(calibratedWhite: 0.13, alpha: 1)))
                 )
         )
+        // Slider-driven size changes should not animate layout / image swaps.
+        .transaction { $0.animation = nil }
     }
 
     // MARK: - Actions
 
     private func reset() {
         color = defaults.color
+        suppressHexToColor = true
         hexText = defaults.hex
+        suppressHexToColor = false
         strokeWidth = defaults.strokeWidth
         size = defaults.size
+        rasterSize = defaults.size.rounded()
         absoluteStrokeWidth = defaults.absoluteStrokeWidth
         requestRender()
     }
@@ -209,10 +208,12 @@ struct ContentView: View {
 
     private func kickRender() {
         let generation = renderGeneration
-        let targetSize = size
+        // Raster at quantized pt size; SwiftUI still scales with live `size`.
+        let targetSize = rasterSize
+        let nsColor = NSColor(color)
         let options = Ruyi.Options(
             size: CGSize(width: targetSize, height: targetSize),
-            color: NSColor(color),
+            color: nsColor,
             strokeWidth: strokeWidth,
             absoluteStrokeWidth: absoluteStrokeWidth,
             referenceSize: 24,
@@ -252,6 +253,37 @@ struct ContentView: View {
 
     private func format(_ value: Double) -> String {
         String(format: abs(value - value.rounded()) < 0.05 ? "%.0f" : "%.1f", value)
+    }
+}
+
+private struct IconCell: View {
+    let name: String
+    let image: NSImage?
+    let displaySize: Double
+
+    var body: some View {
+        VStack(spacing: 8) {
+            ZStack {
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(Color.white.opacity(0.04))
+                    .frame(width: 72, height: 72)
+                if let image {
+                    // Live slider size for immediacy; bitmap refreshes on quantized pt steps.
+                    Image(nsImage: image)
+                        .resizable()
+                        .interpolation(.high)
+                        .frame(width: displaySize, height: displaySize)
+                } else {
+                    ProgressView()
+                        .controlSize(.mini)
+                }
+            }
+            .frame(width: 72, height: 72)
+            Text(name)
+                .font(.system(size: 10))
+                .foregroundStyle(.white.opacity(0.45))
+                .lineLimit(1)
+        }
     }
 }
 
