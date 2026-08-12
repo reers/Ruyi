@@ -33,6 +33,48 @@ export class ThorVG {
     if (widthPx <= 0 || heightPx <= 0) {
       return undefined;
     }
+    const nativeBuffer = await ThorVG.renderSvgRgba(
+      svg,
+      widthPx,
+      heightPx,
+      argb,
+      strokeWidth,
+      absoluteStrokeWidth,
+      designSize,
+      referenceSize,
+      gradientKind,
+      stopOffsets,
+      stopColors,
+      gradGeom,
+    );
+    if (!nativeBuffer) {
+      return undefined;
+    }
+    return ThorVG.pixelMapFromRgba(nativeBuffer, widthPx, heightPx);
+  }
+
+  /**
+   * Render SVG → premultiplied RGBA_8888 bytes.
+   * Kept separate so Ruyi can use the native result as an alpha mask before
+   * wrapping the final ImageKit PixelMap.
+   */
+  static async renderSvgRgba(
+    svg: string | ArrayBuffer,
+    widthPx: number,
+    heightPx: number,
+    argb: number = 0,
+    strokeWidth?: number,
+    absoluteStrokeWidth: boolean = false,
+    designSize?: number,
+    referenceSize: number = 24,
+    gradientKind: number = 0,
+    stopOffsets?: Float32Array,
+    stopColors?: Int32Array,
+    gradGeom?: Float32Array,
+  ): Promise<ArrayBuffer | undefined> {
+    if (widthPx <= 0 || heightPx <= 0) {
+      return undefined;
+    }
     const stroke: number = (strokeWidth === undefined) ? -1 : strokeWidth;
     const design: number = (designSize === undefined) ? Math.min(widthPx, heightPx) : designSize;
     const nativeBuffer: ArrayBuffer | null = await ruyiNative.renderSvg(
@@ -52,7 +94,7 @@ export class ThorVG {
     if (nativeBuffer === null) {
       return undefined;
     }
-    return ThorVG.pixelMapFromNative(nativeBuffer, widthPx, heightPx);
+    return nativeBuffer;
   }
 
   /** Batch render many SVGs with the same style (one native worker job). */
@@ -95,13 +137,55 @@ export class ThorVG {
       if (buf === null || buf === undefined || buf.byteLength === 0) {
         out.push(undefined);
       } else {
-        out.push(ThorVG.pixelMapFromNative(buf, widthPx, heightPx));
+        out.push(ThorVG.pixelMapFromRgba(buf, widthPx, heightPx));
       }
     }
     return out;
   }
 
-  private static pixelMapFromNative(
+  /** Batch render many SVGs to premultiplied RGBA_8888 bytes. */
+  static async renderSvgBatchRgba(
+    svgs: string[],
+    widthPx: number,
+    heightPx: number,
+    argb: number = 0,
+    strokeWidth?: number,
+    absoluteStrokeWidth: boolean = false,
+    designSize?: number,
+    referenceSize: number = 24,
+    gradientKind: number = 0,
+    stopOffsets?: Float32Array,
+    stopColors?: Int32Array,
+    gradGeom?: Float32Array,
+  ): Promise<(ArrayBuffer | undefined)[]> {
+    if (svgs.length === 0 || widthPx <= 0 || heightPx <= 0) {
+      return [];
+    }
+    const stroke: number = (strokeWidth === undefined) ? -1 : strokeWidth;
+    const design: number = (designSize === undefined) ? Math.min(widthPx, heightPx) : designSize;
+    const buffers: ArrayBuffer[] = await ruyiNative.renderSvgBatch(
+      svgs,
+      widthPx,
+      heightPx,
+      argb,
+      stroke,
+      absoluteStrokeWidth,
+      design,
+      referenceSize,
+      gradientKind,
+      stopOffsets,
+      stopColors,
+      gradGeom,
+    );
+    const out: (ArrayBuffer | undefined)[] = [];
+    for (let i = 0; i < buffers.length; i++) {
+      const buf = buffers[i];
+      out.push((buf === null || buf === undefined || buf.byteLength === 0) ? undefined : buf);
+    }
+    return out;
+  }
+
+  static pixelMapFromRgba(
     rgbaBuffer: ArrayBuffer,
     widthPx: number,
     heightPx: number,
