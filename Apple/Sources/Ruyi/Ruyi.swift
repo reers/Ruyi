@@ -145,7 +145,10 @@ public enum Ruyi {
         public var absoluteStrokeWidth: Bool
         /// Design-size baseline used when `absoluteStrokeWidth` is `false`. Default 24.
         public var referenceSize: CGFloat
-        /// Screen scale. Use `0` for the main-screen scale (Apple platforms).
+        /// Backing scale for rasterization (points → pixels).
+        /// Prefer an explicit value from the UI context (`traitCollection.displayScale`,
+        /// SwiftUI `EnvironmentValues.displayScale`, or `NSWindow.backingScaleFactor`).
+        /// Use `0` to let Ruyi resolve a cheap fallback (`displayScale`, else @2x).
         public var scale: CGFloat
 
         public init(

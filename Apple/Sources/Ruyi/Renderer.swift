@@ -179,14 +179,25 @@ private func applyStyleCallback(paint: Tvg_Paint?, data: UnsafeMutableRawPointer
 
 // MARK: - Render
 
+/// Resolve bitmap scale when `Options.scale == 0`.
+/// Prefer passing an explicit scale from the call site (`traitCollection.displayScale` /
+/// SwiftUI `\.displayScale` / `window.backingScaleFactor`). Keep this fallback cheap —
+/// it may run on every `image(...)` call (including under `concurrentPerform`).
 private func resolvedScale(_ scale: CGFloat) -> CGFloat {
     if scale > 0 { return scale }
-#if os(visionOS)
+
+#if canImport(UIKit)
+    // WWDC26 / UIKit guidance: replace UIScreen.main.scale with displayScale.
+    // 0 means “unspecified” (no trait environment / background thread) → @2x.
+    let traitScale = UITraitCollection.current.displayScale
+    if traitScale > 0 { return traitScale }
+#if os(watchOS)
+    let deviceScale = WKInterfaceDevice.current().screenScale
+    return deviceScale > 0 ? deviceScale : 2
+#else
     return 2
-#elseif os(watchOS)
-    return WKInterfaceDevice.current().screenScale
-#elseif canImport(UIKit)
-    return UIScreen.main.scale
+#endif
+
 #elseif canImport(AppKit)
     return NSScreen.main?.backingScaleFactor ?? 2
 #else

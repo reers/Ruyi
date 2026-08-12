@@ -163,6 +163,7 @@ private struct DemoWorkspaceShell<Sidebar: View, Canvas: View>: View {
 
 private struct DemoOriginalWorkspace: View {
     @Binding var tintMode: DemoTintMode
+    @Environment(\.displayScale) private var displayScale
 
     @State private var size: Double = DemoDefaults.size
     @State private var rendered: [String: RuyiImage] = [:]
@@ -194,6 +195,7 @@ private struct DemoOriginalWorkspace: View {
             DemoIconGrid(icons: DemoPlatform.icons, rendered: rendered, displaySize: size)
         }
         .onAppear(perform: requestRender)
+        .onChange(of: displayScale) { _ in requestRender() }
         .onChange(of: size) { newValue in
             let quantized = newValue.rounded()
             guard quantized != rasterSize else { return }
@@ -220,7 +222,7 @@ private struct DemoOriginalWorkspace: View {
         let targetSize = rasterSize
         let options = Ruyi.Options(
             size: CGSize(width: targetSize, height: targetSize),
-            scale: DemoPlatform.screenScale
+            scale: displayScale
         )
         let icons = DemoPlatform.icons
 
@@ -254,6 +256,7 @@ private struct DemoOriginalWorkspace: View {
 
 private struct DemoSolidWorkspace: View {
     @Binding var tintMode: DemoTintMode
+    @Environment(\.displayScale) private var displayScale
 
     @State private var color = Color.white
     @State private var hexText = "#FFFFFF"
@@ -314,6 +317,7 @@ private struct DemoSolidWorkspace: View {
             DemoIconGrid(icons: DemoPlatform.icons, rendered: rendered, displaySize: size)
         }
         .onAppear(perform: requestRender)
+        .onChange(of: displayScale) { _ in requestRender() }
         .onChange(of: color) { _ in
             suppressHexToColor = true
             hexText = color.demoHex()
@@ -366,7 +370,7 @@ private struct DemoSolidWorkspace: View {
             strokeWidth: strokeWidth,
             absoluteStrokeWidth: absoluteStrokeWidth,
             referenceSize: 24,
-            scale: DemoPlatform.screenScale
+            scale: displayScale
         )
         let icons = DemoPlatform.icons
 
@@ -400,6 +404,7 @@ private struct DemoSolidWorkspace: View {
 
 private struct DemoGradientWorkspace: View {
     @Binding var tintMode: DemoTintMode
+    @Environment(\.displayScale) private var displayScale
 
     @State private var stop0 = Color(red: 0.95, green: 0.35, blue: 0.45)
     @State private var stop1 = Color(red: 1.0, green: 0.75, blue: 0.2)
@@ -487,6 +492,7 @@ private struct DemoGradientWorkspace: View {
             isRendering = false
             DemoPlatform.dismissSystemColorPanel()
         }
+        .onChange(of: displayScale) { _ in requestRender() }
         .onChange(of: tintMode) { _ in requestRender() }
         .onChange(of: strokeWidth) { _ in requestRender() }
         .onChange(of: size) { newValue in
@@ -585,7 +591,7 @@ private struct DemoGradientWorkspace: View {
             strokeWidth: strokeWidth,
             absoluteStrokeWidth: absoluteStrokeWidth,
             referenceSize: 24,
-            scale: DemoPlatform.screenScale
+            scale: displayScale
         )
         let icons = DemoPlatform.icons
 

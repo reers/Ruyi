@@ -3,26 +3,11 @@ import SwiftUI
 
 #if os(macOS)
 import AppKit
-#elseif os(watchOS)
-import WatchKit
-import UIKit
 #else
 import UIKit
 #endif
 
 enum DemoPlatform {
-    static var screenScale: CGFloat {
-        #if os(macOS)
-        NSScreen.main?.backingScaleFactor ?? 2
-        #elseif os(watchOS)
-        WKInterfaceDevice.current().screenScale
-        #elseif os(visionOS)
-        2
-        #else
-        UIScreen.main.scale
-        #endif
-    }
-
     /// watchOS keeps a smaller set for battery / memory while testing.
     static var icons: [IconCatalog.DemoIcon] {
         #if os(watchOS)
