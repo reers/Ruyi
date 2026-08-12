@@ -16,9 +16,13 @@ struct RenderArgs {
     int32_t heightPx = 0;
     int32_t argb = 0;
     float strokeWidth = -1.f;
-    bool absoluteStroke = true;
+    bool absoluteStroke = false;
     float designSize = 0.f;
     float referenceSize = 24.f;
+    int32_t gradientKind = 0; // 0 none, 1 linear, 2 radial
+    std::vector<thorvg_render::ColorStop> stops;
+    float geom[6] = {0, 0, 0, 0, 0, 0};
+    int geomCount = 0;
 };
 
 struct AsyncCtx {
@@ -78,6 +82,68 @@ bool ParseCommonArgs(napi_env env, napi_value *args, size_t argc, size_t base, R
         napi_get_value_double(env, args[base + 6], &ref);
         out.referenceSize = static_cast<float>(ref);
     }
+    // Optional gradient: kind, Float32Array offsets, Int32Array colors, Float32Array geom.
+    if (argc >= base + 8) {
+        napi_get_value_int32(env, args[base + 7], &out.gradientKind);
+    }
+    if (argc >= base + 11 && out.gradientKind != 0) {
+        bool isTyped = false;
+        napi_is_typedarray(env, args[base + 8], &isTyped);
+        if (isTyped) {
+            napi_typedarray_type type = napi_float32_array;
+            size_t length = 0;
+            void *data = nullptr;
+            napi_value arrayBuffer = nullptr;
+            size_t byteOffset = 0;
+            napi_get_typedarray_info(env, args[base + 8], &type, &length, &data, &arrayBuffer, &byteOffset);
+            if (type == napi_float32_array && data != nullptr && length > 0) {
+                auto *offsets = static_cast<float *>(data);
+                bool isColors = false;
+                napi_is_typedarray(env, args[base + 9], &isColors);
+                if (isColors) {
+                    napi_typedarray_type cType = napi_int32_array;
+                    size_t cLen = 0;
+                    void *cData = nullptr;
+                    napi_value cBuf = nullptr;
+                    size_t cOff = 0;
+                    napi_get_typedarray_info(env, args[base + 9], &cType, &cLen, &cData, &cBuf, &cOff);
+                    if ((cType == napi_int32_array || cType == napi_uint32_array) && cData != nullptr) {
+                        auto *colors = static_cast<int32_t *>(cData);
+                        const size_t n = std::min(length, cLen);
+                        out.stops.clear();
+                        out.stops.reserve(n);
+                        for (size_t i = 0; i < n; ++i) {
+                            thorvg_render::ColorStop stop;
+                            stop.offset = offsets[i];
+                            const int32_t argb = colors[i];
+                            stop.a = static_cast<uint8_t>((argb >> 24) & 0xff);
+                            stop.r = static_cast<uint8_t>((argb >> 16) & 0xff);
+                            stop.g = static_cast<uint8_t>((argb >> 8) & 0xff);
+                            stop.b = static_cast<uint8_t>(argb & 0xff);
+                            out.stops.push_back(stop);
+                        }
+                    }
+                }
+            }
+        }
+        bool isGeom = false;
+        napi_is_typedarray(env, args[base + 10], &isGeom);
+        if (isGeom) {
+            napi_typedarray_type gType = napi_float32_array;
+            size_t gLen = 0;
+            void *gData = nullptr;
+            napi_value gBuf = nullptr;
+            size_t gOff = 0;
+            napi_get_typedarray_info(env, args[base + 10], &gType, &gLen, &gData, &gBuf, &gOff);
+            if (gType == napi_float32_array && gData != nullptr) {
+                auto *geom = static_cast<float *>(gData);
+                out.geomCount = static_cast<int>(std::min(gLen, size_t{6}));
+                for (int i = 0; i < out.geomCount; ++i) {
+                    out.geom[i] = geom[i];
+                }
+            }
+        }
+    }
     if (out.designSize <= 0.f) {
         out.designSize = static_cast<float>(std::min(out.widthPx, out.heightPx));
     }
@@ -95,6 +161,12 @@ std::vector<uint32_t> RenderOne(const RenderArgs &args, const std::string &svg) 
     req.absoluteStroke = args.absoluteStroke;
     req.designSize = args.designSize;
     req.referenceSize = args.referenceSize;
+    req.gradKind = static_cast<thorvg_render::GradKind>(args.gradientKind);
+    req.stops = args.stops;
+    req.geomCount = args.geomCount;
+    for (int i = 0; i < 6; ++i) {
+        req.geom[i] = args.geom[i];
+    }
     return thorvg_render::renderSvg(req);
 }
 
@@ -186,8 +258,8 @@ napi_value Version(napi_env env, napi_callback_info) {
  * Heavy work runs on libuv/worker thread so slider UI stays responsive.
  */
 napi_value RenderSvg(napi_env env, napi_callback_info info) {
-    size_t argc = 8;
-    napi_value args[8] = {nullptr};
+    size_t argc = 12;
+    napi_value args[12] = {nullptr};
     napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
 
     napi_value promise = nullptr;
@@ -218,8 +290,8 @@ napi_value RenderSvg(napi_env env, napi_callback_info info) {
  * renderSvgBatch(svgs: string[], widthPx, heightPx, ...) → Promise<ArrayBuffer|null[]>
  */
 napi_value RenderSvgBatch(napi_env env, napi_callback_info info) {
-    size_t argc = 8;
-    napi_value args[8] = {nullptr};
+    size_t argc = 12;
+    napi_value args[12] = {nullptr};
     napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
 
     napi_value promise = nullptr;

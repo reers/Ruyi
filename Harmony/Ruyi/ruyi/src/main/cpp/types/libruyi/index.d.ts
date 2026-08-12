@@ -5,6 +5,9 @@ export const version: () => string;
 /**
  * Render SVG → Promise of ArrayBuffer (uint32 ARGB8888 / little-endian BGRA bytes, premultiplied).
  * Runs off the JS thread.
+ *
+ * gradientKind: 0=none, 1=linear, 2=radial
+ * stopOffsets / stopColors / gradGeom: TypedArrays when gradientKind != 0
  */
 export const renderSvg: (
   svg: string | ArrayBuffer,
@@ -14,7 +17,11 @@ export const renderSvg: (
   strokeWidth?: number,
   absoluteStroke?: boolean,
   designSize?: number,
-  referenceSize?: number
+  referenceSize?: number,
+  gradientKind?: number,
+  stopOffsets?: Float32Array,
+  stopColors?: Int32Array,
+  gradGeom?: Float32Array
 ) => Promise<ArrayBuffer | null>;
 
 /**
@@ -28,5 +35,9 @@ export const renderSvgBatch: (
   strokeWidth?: number,
   absoluteStroke?: boolean,
   designSize?: number,
-  referenceSize?: number
+  referenceSize?: number,
+  gradientKind?: number,
+  stopOffsets?: Float32Array,
+  stopColors?: Int32Array,
+  gradGeom?: Float32Array
 ) => Promise<ArrayBuffer[]>;

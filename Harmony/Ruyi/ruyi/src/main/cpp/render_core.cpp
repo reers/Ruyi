@@ -17,7 +17,35 @@ struct StyleCtx {
     uint8_t a = 255;
     bool hasStroke = false;
     float strokeWidth = 0.f;
+    GradKind gradKind = GradKind::None;
+    std::vector<Tvg_Color_Stop> stops;
+    float x1 = 0, y1 = 0, x2 = 0, y2 = 0;
+    float cx = 0, cy = 0, radius = 0, fx = 0, fy = 0, fr = 0;
 };
+
+Tvg_Gradient makeGradient(const StyleCtx &ctx) {
+    if (ctx.stops.size() < 2) {
+        return nullptr;
+    }
+    Tvg_Gradient grad = nullptr;
+    if (ctx.gradKind == GradKind::Linear) {
+        grad = tvg_linear_gradient_new();
+        if (grad == nullptr) {
+            return nullptr;
+        }
+        (void)tvg_linear_gradient_set(grad, ctx.x1, ctx.y1, ctx.x2, ctx.y2);
+    } else if (ctx.gradKind == GradKind::Radial) {
+        grad = tvg_radial_gradient_new();
+        if (grad == nullptr) {
+            return nullptr;
+        }
+        (void)tvg_radial_gradient_set(grad, ctx.cx, ctx.cy, ctx.radius, ctx.fx, ctx.fy, ctx.fr);
+    } else {
+        return nullptr;
+    }
+    (void)tvg_gradient_set_color_stops(grad, ctx.stops.data(), static_cast<uint32_t>(ctx.stops.size()));
+    return grad;
+}
 
 bool applyStyle(Tvg_Paint paint, void *data) {
     if (paint == nullptr || data == nullptr) {
@@ -33,17 +61,33 @@ bool applyStyle(Tvg_Paint paint, void *data) {
     float strokeW = 0.f;
     (void)tvg_shape_get_stroke_width(paint, &strokeW);
 
-    if (ctx->hasStroke && ctx->strokeWidth >= 0.f) {
+    // Match Apple/Android: only override width when the shape already has a stroke.
+    if (ctx->hasStroke && ctx->strokeWidth >= 0.f && strokeW > 0.f) {
         (void)tvg_shape_set_stroke_width(paint, ctx->strokeWidth);
         strokeW = ctx->strokeWidth;
     }
 
-    if (ctx->hasColor) {
-        uint8_t fr = 0, fg = 0, fb = 0, fa = 0;
-        if (tvg_shape_get_fill_color(paint, &fr, &fg, &fb, &fa) == TVG_RESULT_SUCCESS && fa > 0) {
+    uint8_t fr = 0, fg = 0, fb = 0, fa = 0;
+    const bool hasOpaqueFill =
+        tvg_shape_get_fill_color(paint, &fr, &fg, &fb, &fa) == TVG_RESULT_SUCCESS && fa > 0;
+    const bool hasStroke = strokeW > 0.f;
+
+    if (ctx->gradKind != GradKind::None && ctx->stops.size() >= 2) {
+        if (hasOpaqueFill) {
+            if (Tvg_Gradient fillGrad = makeGradient(*ctx)) {
+                (void)tvg_shape_set_gradient(paint, fillGrad);
+            }
+        }
+        if (hasStroke) {
+            if (Tvg_Gradient strokeGrad = makeGradient(*ctx)) {
+                (void)tvg_shape_set_stroke_gradient(paint, strokeGrad);
+            }
+        }
+    } else if (ctx->hasColor) {
+        if (hasOpaqueFill) {
             (void)tvg_shape_set_fill_color(paint, ctx->r, ctx->g, ctx->b, ctx->a);
         }
-        if (strokeW > 0.f) {
+        if (hasStroke) {
             (void)tvg_shape_set_stroke_color(paint, ctx->r, ctx->g, ctx->b, ctx->a);
         }
     }
@@ -52,7 +96,6 @@ bool applyStyle(Tvg_Paint paint, void *data) {
 
 }  // namespace
 
-// Same as Apple / Android Ruyi: lazy init on first render.
 void ensureEngine() {
     static std::once_flag once;
     std::call_once(once, [] { (void)tvg_engine_init(0); });
@@ -114,6 +157,8 @@ std::vector<uint32_t> renderSvg(const RenderRequest &req) {
     float contentH = 0.f;
     (void)tvg_picture_get_size(picture, &contentW, &contentH);
     const float viewEdge = std::max(1.f, std::min(contentW, contentH));
+    const float w = std::max(1.f, contentW);
+    const float h = std::max(1.f, contentH);
 
     if (tvg_picture_set_size(picture, static_cast<float>(req.widthPx), static_cast<float>(req.heightPx))
         != TVG_RESULT_SUCCESS) {
@@ -122,13 +167,48 @@ std::vector<uint32_t> renderSvg(const RenderRequest &req) {
     }
 
     StyleCtx style;
-    if (req.argb != 0) {
+    if ((req.gradKind == GradKind::Linear || req.gradKind == GradKind::Radial) &&
+        req.stops.size() >= 2) {
+        style.gradKind = req.gradKind;
+        style.stops.reserve(req.stops.size());
+        for (const auto &s : req.stops) {
+            Tvg_Color_Stop stop{};
+            stop.offset = std::min(1.f, std::max(0.f, s.offset));
+            stop.r = s.r;
+            stop.g = s.g;
+            stop.b = s.b;
+            stop.a = s.a;
+            style.stops.push_back(stop);
+        }
+        std::sort(style.stops.begin(), style.stops.end(), [](const Tvg_Color_Stop &a, const Tvg_Color_Stop &b) {
+            return a.offset < b.offset;
+        });
+        if (req.gradKind == GradKind::Linear && req.geomCount >= 4) {
+            style.x1 = req.geom[0] * w;
+            style.y1 = req.geom[1] * h;
+            style.x2 = req.geom[2] * w;
+            style.y2 = req.geom[3] * h;
+        } else if (req.gradKind == GradKind::Radial && req.geomCount >= 6) {
+            style.cx = req.geom[0] * w;
+            style.cy = req.geom[1] * h;
+            style.radius = std::max(0.f, req.geom[2]) * viewEdge;
+            style.fx = req.geom[3] * w;
+            style.fy = req.geom[4] * h;
+            style.fr = std::max(0.f, req.geom[5]) * viewEdge;
+        } else {
+            style.gradKind = GradKind::None;
+            style.stops.clear();
+        }
+    }
+
+    if (style.gradKind == GradKind::None && req.argb != 0) {
         style.hasColor = true;
         style.a = static_cast<uint8_t>((req.argb >> 24) & 0xff);
         style.r = static_cast<uint8_t>((req.argb >> 16) & 0xff);
         style.g = static_cast<uint8_t>((req.argb >> 8) & 0xff);
         style.b = static_cast<uint8_t>(req.argb & 0xff);
     }
+
     if (req.strokeWidth >= 0.f) {
         style.hasStroke = true;
         if (req.absoluteStroke) {
@@ -141,7 +221,7 @@ std::vector<uint32_t> renderSvg(const RenderRequest &req) {
         }
     }
 
-    if (style.hasColor || style.hasStroke) {
+    if (style.hasColor || style.hasStroke || style.gradKind != GradKind::None) {
         Tvg_Accessor accessor = tvg_accessor_new();
         if (accessor != nullptr) {
             (void)tvg_accessor_set(accessor, picture, applyStyle, &style);

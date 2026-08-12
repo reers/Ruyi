@@ -18,34 +18,18 @@ internal object ThorVG {
     fun version(): String = nativeVersion()
 
     fun renderSvg(
-        svg: String,
-        widthPx: Int,
-        heightPx: Int,
-        argb: Int = 0,
-        strokeWidth: Float? = null,
-        absoluteStrokeWidth: Boolean = true,
-        designSize: Float = minOf(widthPx, heightPx).toFloat(),
-        referenceSize: Float = 24f,
-    ): Bitmap? = renderSvg(
-        svg.toByteArray(StandardCharsets.UTF_8),
-        widthPx,
-        heightPx,
-        argb,
-        strokeWidth,
-        absoluteStrokeWidth,
-        designSize,
-        referenceSize,
-    )
-
-    fun renderSvg(
         svg: ByteArray,
         widthPx: Int,
         heightPx: Int,
         argb: Int = 0,
         strokeWidth: Float? = null,
-        absoluteStrokeWidth: Boolean = true,
+        absoluteStrokeWidth: Boolean = false,
         designSize: Float = minOf(widthPx, heightPx).toFloat(),
         referenceSize: Float = 24f,
+        gradientKind: Int = 0,
+        stopOffsets: FloatArray? = null,
+        stopColors: IntArray? = null,
+        gradGeom: FloatArray? = null,
     ): Bitmap? {
         if (svg.isEmpty() || widthPx <= 0 || heightPx <= 0) return null
         val stroke = strokeWidth ?: -1f
@@ -58,12 +42,44 @@ internal object ThorVG {
             absoluteStrokeWidth,
             designSize,
             referenceSize,
+            gradientKind,
+            stopOffsets,
+            stopColors,
+            gradGeom,
         ) ?: return null
         val bitmap = Bitmap.createBitmap(widthPx, heightPx, Bitmap.Config.ARGB_8888)
         bitmap.setHasAlpha(true)
         bitmap.setPixels(pixels, 0, widthPx, 0, 0, widthPx, heightPx)
         return bitmap
     }
+
+    fun renderSvg(
+        svg: String,
+        widthPx: Int,
+        heightPx: Int,
+        argb: Int = 0,
+        strokeWidth: Float? = null,
+        absoluteStrokeWidth: Boolean = false,
+        designSize: Float = minOf(widthPx, heightPx).toFloat(),
+        referenceSize: Float = 24f,
+        gradientKind: Int = 0,
+        stopOffsets: FloatArray? = null,
+        stopColors: IntArray? = null,
+        gradGeom: FloatArray? = null,
+    ): Bitmap? = renderSvg(
+        svg.toByteArray(StandardCharsets.UTF_8),
+        widthPx,
+        heightPx,
+        argb,
+        strokeWidth,
+        absoluteStrokeWidth,
+        designSize,
+        referenceSize,
+        gradientKind,
+        stopOffsets,
+        stopColors,
+        gradGeom,
+    )
 
     private external fun nativeVersion(): String
 
@@ -76,5 +92,9 @@ internal object ThorVG {
         absoluteStroke: Boolean,
         designSize: Float,
         referenceSize: Float,
+        gradientKind: Int,
+        stopOffsets: FloatArray?,
+        stopColors: IntArray?,
+        gradGeom: FloatArray?,
     ): IntArray?
 }

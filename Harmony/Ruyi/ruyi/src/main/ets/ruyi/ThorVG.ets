@@ -20,9 +20,13 @@ export class ThorVG {
     heightPx: number,
     argb: number = 0,
     strokeWidth?: number,
-    absoluteStrokeWidth: boolean = true,
+    absoluteStrokeWidth: boolean = false,
     designSize?: number,
     referenceSize: number = 24,
+    gradientKind: number = 0,
+    stopOffsets?: Float32Array,
+    stopColors?: Int32Array,
+    gradGeom?: Float32Array,
   ): Promise<image.PixelMap | undefined> {
     if (widthPx <= 0 || heightPx <= 0) {
       return undefined;
@@ -38,6 +42,10 @@ export class ThorVG {
       absoluteStrokeWidth,
       design,
       referenceSize,
+      gradientKind,
+      stopOffsets,
+      stopColors,
+      gradGeom,
     );
     if (nativeBuffer === null) {
       return undefined;
@@ -52,9 +60,13 @@ export class ThorVG {
     heightPx: number,
     argb: number = 0,
     strokeWidth?: number,
-    absoluteStrokeWidth: boolean = true,
+    absoluteStrokeWidth: boolean = false,
     designSize?: number,
     referenceSize: number = 24,
+    gradientKind: number = 0,
+    stopOffsets?: Float32Array,
+    stopColors?: Int32Array,
+    gradGeom?: Float32Array,
   ): Promise<(image.PixelMap | undefined)[]> {
     if (svgs.length === 0 || widthPx <= 0 || heightPx <= 0) {
       return [];
@@ -70,6 +82,10 @@ export class ThorVG {
       absoluteStrokeWidth,
       design,
       referenceSize,
+      gradientKind,
+      stopOffsets,
+      stopColors,
+      gradGeom,
     );
     const out: (image.PixelMap | undefined)[] = [];
     for (let i = 0; i < buffers.length; i++) {
