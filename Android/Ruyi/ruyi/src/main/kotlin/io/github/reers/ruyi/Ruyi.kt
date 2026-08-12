@@ -4,12 +4,12 @@ import android.content.Context
 import android.graphics.Bitmap
 import java.nio.charset.StandardCharsets
 import kotlin.math.PI
+import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.math.sin
-import kotlin.math.sqrt
 
 /**
  * Cross-platform SVG load & render runtime (Android).
@@ -80,7 +80,9 @@ object Ruyi {
                 val rad = degrees * PI / 180.0
                 val dx = cos(rad).toFloat()
                 val dy = sin(rad).toFloat()
-                val extent = (0.5 * sqrt(2.0)).toFloat()
+                // CSS-style "cover the box": axis-aligned angles span edge-to-edge
+                // (both end stops visible); diagonals still reach the corners.
+                val extent = (0.5f * (abs(dx) + abs(dy)))
                 return floatArrayOf(
                     0.5f - dx * extent,
                     0.5f - dy * extent,

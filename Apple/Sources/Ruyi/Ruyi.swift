@@ -71,8 +71,9 @@ public enum Ruyi {
                     let rad = Double(degrees) * .pi / 180
                     let dx = CGFloat(cos(rad))
                     let dy = CGFloat(sin(rad))
-                    // Reach corners of the unit square for any angle.
-                    let extent = CGFloat(0.5 * 2.0.squareRoot())
+                    // CSS-style "cover the box": axis-aligned angles span edge-to-edge
+                    // (both end stops visible); diagonals still reach the corners.
+                    let extent = 0.5 * (abs(dx) + abs(dy))
                     return (
                         CGPoint(x: 0.5 - dx * extent, y: 0.5 - dy * extent),
                         CGPoint(x: 0.5 + dx * extent, y: 0.5 + dy * extent)
