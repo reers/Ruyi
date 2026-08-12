@@ -59,6 +59,16 @@ final class RuyiTests: XCTestCase {
         XCTAssertNotNil(image)
     }
 
+    func testOmitColorAndStrokeWidthKeepsOriginalStyle() throws {
+        let url = try XCTUnwrap(Self.svgURL(named: "sample"))
+        let data = try Data(contentsOf: url)
+        let image = Ruyi.image(
+            data: data,
+            options: .init(size: CGSize(width: 48, height: 48), scale: 2)
+        )
+        XCTAssertNotNil(image)
+    }
+
     func testCustomStopsAndRadialGradientTint() throws {
         let url = try XCTUnwrap(Self.svgURL(named: "sample"))
         let data = try Data(contentsOf: url)

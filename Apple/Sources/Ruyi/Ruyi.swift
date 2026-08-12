@@ -129,16 +129,19 @@ public enum Ruyi {
     public struct Options {
         /// Output size in points (logical). Pixel size = size × scale.
         public var size: CGSize
-        /// Optional solid tint applied to opaque fills and strokes.
-        /// Ignored when `gradient` is set.
+        /// Optional solid tint for opaque fills and strokes.
+        /// Ignored when `gradient` is set. `nil` keeps the SVG's original colors.
         public var color: RuyiColor?
         /// Optional gradient tint for opaque fills and strokes.
         /// Takes precedence over `color` when non-`nil`.
         public var gradient: GradientTint?
-        /// Optional stroke width in points (see `absoluteStrokeWidth`).
+        /// Optional stroke width override in points (see `absoluteStrokeWidth`).
+        /// `nil` keeps the SVG's original stroke widths.
         public var strokeWidth: CGFloat?
-        /// When `true`, `strokeWidth` is constant in points regardless of `size`.
-        /// When `false`, stroke scales with `size / referenceSize` (Lucide-style).
+        /// Only used when `strokeWidth` is set.
+        /// `true`: constant on-screen points regardless of `size`.
+        /// `false`: stroke scales with `size / referenceSize` (Lucide-style). Default.
+        /// Does not affect rendering when `strokeWidth` is `nil`.
         public var absoluteStrokeWidth: Bool
         /// Design-size baseline used when `absoluteStrokeWidth` is `false`. Default 24.
         public var referenceSize: CGFloat
@@ -150,7 +153,7 @@ public enum Ruyi {
             color: RuyiColor? = nil,
             gradient: GradientTint? = nil,
             strokeWidth: CGFloat? = nil,
-            absoluteStrokeWidth: Bool = true,
+            absoluteStrokeWidth: Bool = false,
             referenceSize: CGFloat = 24,
             scale: CGFloat = 0
         ) {

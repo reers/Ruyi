@@ -145,7 +145,9 @@ private func applyStyleCallback(paint: Tvg_Paint?, data: UnsafeMutableRawPointer
     var strokeW: Float = 0
     _ = tvg_shape_get_stroke_width(paint, &strokeW)
 
-    if let width = ctx.strokeWidth, width >= 0 {
+    // Override width only when the shape already has a stroke. Do not invent strokes
+    // on fill-only paths (common with 256-unit filled icon sets).
+    if let width = ctx.strokeWidth, width >= 0, strokeW > 0 {
         _ = tvg_shape_set_stroke_width(paint, width)
         strokeW = width
     }
