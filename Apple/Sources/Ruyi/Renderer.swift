@@ -39,9 +39,99 @@ private enum ThorVGEngine {
 
 // MARK: - Style callback context
 
+private typealias RGBA8 = (r: UInt8, g: UInt8, b: UInt8, a: UInt8)
+
+private enum ResolvedGradient {
+    case linear(stops: [Tvg_Color_Stop], x1: Float, y1: Float, x2: Float, y2: Float)
+    case radial(
+        stops: [Tvg_Color_Stop],
+        cx: Float, cy: Float, r: Float,
+        fx: Float, fy: Float, fr: Float
+    )
+}
+
 private final class StyleContext {
-    var color: (r: UInt8, g: UInt8, b: UInt8, a: UInt8)?
+    var color: RGBA8?
+    var gradient: ResolvedGradient?
     var strokeWidth: Float?
+}
+
+private func clamp01(_ value: CGFloat) -> CGFloat {
+    min(max(value, 0), 1)
+}
+
+private func makeResolvedStops(
+    _ stops: [Ruyi.GradientStop],
+    rgba: (RuyiColor) -> RGBA8?
+) -> [Tvg_Color_Stop]? {
+    var resolved: [Tvg_Color_Stop] = []
+    resolved.reserveCapacity(stops.count)
+    for stop in stops {
+        guard let c = rgba(stop.color) else { continue }
+        resolved.append(
+            Tvg_Color_Stop(
+                offset: Float(clamp01(stop.offset)),
+                r: c.r, g: c.g, b: c.b, a: c.a
+            )
+        )
+    }
+    resolved.sort { $0.offset < $1.offset }
+    return resolved.count >= 2 ? resolved : nil
+}
+
+private func resolveGradient(
+    _ tint: Ruyi.GradientTint,
+    contentW: Float,
+    contentH: Float,
+    rgba: (RuyiColor) -> RGBA8?
+) -> ResolvedGradient? {
+    let w = max(contentW, 1)
+    let h = max(contentH, 1)
+    let minEdge = min(w, h)
+
+    switch tint {
+    case let .linear(stops, start, end):
+        guard let resolved = makeResolvedStops(stops, rgba: rgba) else { return nil }
+        return .linear(
+            stops: resolved,
+            x1: Float(start.x) * w,
+            y1: Float(start.y) * h,
+            x2: Float(end.x) * w,
+            y2: Float(end.y) * h
+        )
+    case let .radial(stops, center, radius, focal, focalRadius):
+        guard let resolved = makeResolvedStops(stops, rgba: rgba) else { return nil }
+        let fxPoint = focal ?? center
+        let r = max(Float(radius), 0) * minEdge
+        let fr = max(Float(focalRadius), 0) * minEdge
+        return .radial(
+            stops: resolved,
+            cx: Float(center.x) * w,
+            cy: Float(center.y) * h,
+            r: r,
+            fx: Float(fxPoint.x) * w,
+            fy: Float(fxPoint.y) * h,
+            fr: fr
+        )
+    }
+}
+
+/// Creates a ThorVG gradient. Caller owns the result until passed to a shape setter.
+private func makeGradient(_ style: ResolvedGradient) -> Tvg_Gradient? {
+    switch style {
+    case let .linear(stops, x1, y1, x2, y2):
+        guard let grad = tvg_linear_gradient_new() else { return nil }
+        _ = tvg_linear_gradient_set(grad, x1, y1, x2, y2)
+        var mutableStops = stops
+        _ = tvg_gradient_set_color_stops(grad, &mutableStops, UInt32(mutableStops.count))
+        return grad
+    case let .radial(stops, cx, cy, r, fx, fy, fr):
+        guard let grad = tvg_radial_gradient_new() else { return nil }
+        _ = tvg_radial_gradient_set(grad, cx, cy, r, fx, fy, fr)
+        var mutableStops = stops
+        _ = tvg_gradient_set_color_stops(grad, &mutableStops, UInt32(mutableStops.count))
+        return grad
+    }
 }
 
 private func applyStyleCallback(paint: Tvg_Paint?, data: UnsafeMutableRawPointer?) -> Bool {
@@ -60,12 +150,24 @@ private func applyStyleCallback(paint: Tvg_Paint?, data: UnsafeMutableRawPointer
         strokeW = width
     }
 
-    if let c = ctx.color {
-        var fr: UInt8 = 0, fg: UInt8 = 0, fb: UInt8 = 0, fa: UInt8 = 0
-        if tvg_shape_get_fill_color(paint, &fr, &fg, &fb, &fa) == TVG_RESULT_SUCCESS, fa > 0 {
+    var fr: UInt8 = 0, fg: UInt8 = 0, fb: UInt8 = 0, fa: UInt8 = 0
+    let hasOpaqueFill =
+        tvg_shape_get_fill_color(paint, &fr, &fg, &fb, &fa) == TVG_RESULT_SUCCESS && fa > 0
+    let hasStroke = strokeW > 0
+
+    if let gradient = ctx.gradient {
+        if hasOpaqueFill, let fillGrad = makeGradient(gradient) {
+            // Shape takes ownership of the Fill*.
+            _ = tvg_shape_set_gradient(paint, fillGrad)
+        }
+        if hasStroke, let strokeGrad = makeGradient(gradient) {
+            _ = tvg_shape_set_stroke_gradient(paint, strokeGrad)
+        }
+    } else if let c = ctx.color {
+        if hasOpaqueFill {
             _ = tvg_shape_set_fill_color(paint, c.r, c.g, c.b, c.a)
         }
-        if strokeW > 0 {
+        if hasStroke {
             _ = tvg_shape_set_stroke_color(paint, c.r, c.g, c.b, c.a)
         }
     }
@@ -163,7 +265,16 @@ private func render(svgBytes: UnsafePointer<CChar>, length: UInt32, options: Ruy
     _ = tvg_picture_set_size(picture, Float(pixelW), Float(pixelH))
 
     let style = StyleContext()
-    if let color = options.color, let rgba = rgbaComponents(from: color) {
+    if let tint = options.gradient,
+       let resolved = resolveGradient(
+        tint,
+        contentW: max(contentW, 1),
+        contentH: max(contentH, 1),
+        rgba: rgbaComponents(from:)
+       )
+    {
+        style.gradient = resolved
+    } else if let color = options.color, let rgba = rgbaComponents(from: color) {
         style.color = rgba
     }
     if let strokeWidth = options.strokeWidth {
@@ -183,7 +294,7 @@ private func render(svgBytes: UnsafePointer<CChar>, length: UInt32, options: Ruy
         style.strokeWidth = Float(svgStroke)
     }
 
-    if style.color != nil || style.strokeWidth != nil {
+    if style.gradient != nil || style.color != nil || style.strokeWidth != nil {
         if let accessor = tvg_accessor_new() {
             defer { tvg_accessor_del(accessor) }
             let ptr = Unmanaged.passUnretained(style).toOpaque()

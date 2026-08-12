@@ -37,6 +37,86 @@ final class RuyiTests: XCTestCase {
         XCTAssertNotNil(image)
     }
 
+    func testLinearGradientTint() throws {
+        let url = try XCTUnwrap(Self.svgURL(named: "sample"))
+        let data = try Data(contentsOf: url)
+#if canImport(UIKit)
+        let start = UIColor.systemPink
+        let end = UIColor.systemBlue
+#elseif canImport(AppKit)
+        let start = NSColor.systemPink
+        let end = NSColor.systemBlue
+#endif
+        let image = Ruyi.image(
+            data: data,
+            options: .init(
+                size: CGSize(width: 48, height: 48),
+                gradient: .linear(from: start, to: end, direction: .topToBottom),
+                strokeWidth: 2,
+                scale: 2
+            )
+        )
+        XCTAssertNotNil(image)
+    }
+
+    func testCustomStopsAndRadialGradientTint() throws {
+        let url = try XCTUnwrap(Self.svgURL(named: "sample"))
+        let data = try Data(contentsOf: url)
+#if canImport(UIKit)
+        let a = UIColor.systemRed
+        let b = UIColor.systemYellow
+        let c = UIColor.systemBlue
+#elseif canImport(AppKit)
+        let a = NSColor.systemRed
+        let b = NSColor.systemYellow
+        let c = NSColor.systemBlue
+#endif
+        let linear = Ruyi.image(
+            data: data,
+            options: .init(
+                size: CGSize(width: 48, height: 48),
+                gradient: .linear(
+                    stops: [
+                        .init(offset: 0, color: a),
+                        .init(offset: 0.4, color: b),
+                        .init(offset: 1, color: c),
+                    ],
+                    start: CGPoint(x: 0.1, y: 0.2),
+                    end: CGPoint(x: 0.9, y: 0.8)
+                ),
+                scale: 2
+            )
+        )
+        let radial = Ruyi.image(
+            data: data,
+            options: .init(
+                size: CGSize(width: 48, height: 48),
+                gradient: .radial(
+                    stops: [
+                        .init(offset: 0, color: a),
+                        .init(offset: 1, color: c),
+                    ],
+                    center: CGPoint(x: 0.4, y: 0.35),
+                    radius: 0.8,
+                    focal: CGPoint(x: 0.45, y: 0.4),
+                    focalRadius: 0.05
+                ),
+                scale: 2
+            )
+        )
+        let angled = Ruyi.image(
+            data: data,
+            options: .init(
+                size: CGSize(width: 48, height: 48),
+                gradient: .linear(from: a, to: c, direction: .angle(135)),
+                scale: 2
+            )
+        )
+        XCTAssertNotNil(linear)
+        XCTAssertNotNil(radial)
+        XCTAssertNotNil(angled)
+    }
+
     /// Absolute stroke 2pt @2x should paint ~4 device pixels thick on a horizontal line.
     func testAbsoluteStrokeWidthMatchesPoints() throws {
         let svg = """
