@@ -130,7 +130,8 @@ bool fillStops(
     out.reserve(static_cast<size_t>(n));
     for (jsize i = 0; i < n; ++i) {
         const float offset = std::min(1.f, std::max(0.f, offsets[static_cast<size_t>(i)]));
-        const jint argb = colors[static_cast<size_t>(i)];
+        // Unsigned: AA>=0x80 is negative as jint; arithmetic >> corrupts channels.
+        const uint32_t argb = static_cast<uint32_t>(colors[static_cast<size_t>(i)]);
         Tvg_Color_Stop stop{};
         stop.offset = offset;
         stop.a = static_cast<uint8_t>((argb >> 24) & 0xff);
@@ -270,10 +271,11 @@ Java_io_github_reers_ruyi_ThorVG_nativeRenderSvg(
 
     if (style.gradKind == GradKind::None && argb != 0) {
         style.hasColor = true;
-        style.a = static_cast<uint8_t>((argb >> 24) & 0xff);
-        style.r = static_cast<uint8_t>((argb >> 16) & 0xff);
-        style.g = static_cast<uint8_t>((argb >> 8) & 0xff);
-        style.b = static_cast<uint8_t>(argb & 0xff);
+        const uint32_t packed = static_cast<uint32_t>(argb);
+        style.a = static_cast<uint8_t>((packed >> 24) & 0xff);
+        style.r = static_cast<uint8_t>((packed >> 16) & 0xff);
+        style.g = static_cast<uint8_t>((packed >> 8) & 0xff);
+        style.b = static_cast<uint8_t>(packed & 0xff);
     }
 
     if (strokeWidth >= 0.f) {
