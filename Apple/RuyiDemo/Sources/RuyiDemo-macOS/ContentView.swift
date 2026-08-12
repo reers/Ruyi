@@ -3,6 +3,7 @@ import Ruyi
 import SwiftUI
 
 private enum TintMode: String, CaseIterable, Identifiable {
+    case original
     case solid
     case linear
     case radial
@@ -11,6 +12,7 @@ private enum TintMode: String, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
+        case .original: return "Original"
         case .solid: return "Solid"
         case .linear: return "Linear"
         case .radial: return "Radial"
@@ -37,49 +39,159 @@ private enum LinearDirectionPreset: String, CaseIterable, Identifiable {
 }
 
 struct ContentView: View {
-    @State private var tintMode: TintMode = .solid
+    @State private var tintMode: TintMode = .original
 
     var body: some View {
-        VStack(spacing: 0) {
-            tintPicker
-                .padding(.horizontal, 24)
-                .padding(.top, 16)
-                .padding(.bottom, 8)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Color(nsColor: .init(calibratedWhite: 0.11, alpha: 1)))
-
-            // Hard split: Solid owns a fresh main-like render loop. Switching modes
-            // remounts the workspace so gradient/sheet work cannot pollute Solid.
-            Group {
-                switch tintMode {
-                case .solid:
-                    SolidWorkspace()
-                case .linear, .radial:
-                    GradientWorkspace(tintMode: tintMode)
-                }
+        // Hard split workspaces: switching modes remounts so gradient work cannot
+        // pollute Original/Solid. Mode picker lives in each sidebar (no extra top bar).
+        Group {
+            switch tintMode {
+            case .original:
+                OriginalWorkspace(tintMode: $tintMode)
+            case .solid:
+                SolidWorkspace(tintMode: $tintMode)
+            case .linear, .radial:
+                GradientWorkspace(tintMode: $tintMode)
             }
-            .id(tintMode)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
+        .id(tintMode)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .preferredColorScheme(.dark)
         .onChange(of: tintMode) { _ in
             NSColorPanel.shared.orderOut(nil)
         }
     }
+}
 
-    private var tintPicker: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Tint")
-                .font(.system(size: 12, weight: .medium))
-                .foregroundStyle(.white.opacity(0.7))
-            Picker("", selection: $tintMode) {
-                ForEach(TintMode.allCases) { mode in
-                    Text(mode.title).tag(mode)
+/// Segmented control is relatively heavy — keep it out of stroke/size invalidation.
+private struct ModePickerView: View, Equatable {
+    @Binding var tintMode: TintMode
+
+    static func == (lhs: ModePickerView, rhs: ModePickerView) -> Bool {
+        lhs.tintMode == rhs.tintMode
+    }
+
+    var body: some View {
+        Picker("", selection: $tintMode) {
+            ForEach(TintMode.allCases) { mode in
+                Text(mode.title).tag(mode)
+            }
+        }
+        .pickerStyle(.segmented)
+        .labelsHidden()
+    }
+}
+
+// MARK: - Original workspace (size only, keep SVG colors/strokes)
+
+private struct OriginalWorkspace: View {
+    @Binding var tintMode: TintMode
+
+    @State private var size: Double = 24
+    @State private var rendered: [String: NSImage] = [:]
+    @State private var isRendering = false
+    @State private var renderGeneration = 0
+    @State private var renderBusy = false
+    @State private var rasterSize: Double = 24
+
+    var body: some View {
+        HStack(spacing: 0) {
+            sidebar
+                .frame(width: 300)
+                .padding(24)
+                .background(Color(nsColor: .init(calibratedWhite: 0.11, alpha: 1)))
+
+            IconGrid(
+                icons: IconCatalog.icons,
+                rendered: rendered,
+                displaySize: size
+            )
+            .padding(20)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color(nsColor: .init(calibratedWhite: 0.16, alpha: 1)))
+        }
+        .onAppear(perform: requestRender)
+        .onChange(of: size) { newValue in
+            let quantized = newValue.rounded()
+            guard quantized != rasterSize else { return }
+            rasterSize = quantized
+            requestRender()
+        }
+    }
+
+    private var sidebar: some View {
+        VStack(alignment: .leading, spacing: 22) {
+            ModePickerView(tintMode: $tintMode)
+                .equatable()
+
+            header(reset: reset)
+
+            Text("Original SVG colors and strokes — only size is adjustable.")
+                .font(.system(size: 13))
+                .foregroundStyle(.white.opacity(0.55))
+                .fixedSize(horizontal: false, vertical: true)
+
+            sliderRow(
+                title: "Size",
+                valueText: "\(Int(size.rounded()))px",
+                value: $size,
+                range: 12...64
+            )
+
+            Spacer()
+            footer(isRendering: isRendering)
+        }
+    }
+
+    private func reset() {
+        size = 24
+        rasterSize = 24
+        requestRender()
+    }
+
+    private func requestRender() {
+        renderGeneration += 1
+        isRendering = true
+        guard !renderBusy else { return }
+        kickRender()
+    }
+
+    private func kickRender() {
+        let generation = renderGeneration
+        let targetSize = rasterSize
+        // Omit color / gradient / strokeWidth → keep the SVG’s original style.
+        let options = Ruyi.Options(
+            size: CGSize(width: targetSize, height: targetSize),
+            scale: NSScreen.main?.backingScaleFactor ?? 2
+        )
+        let icons = IconCatalog.icons
+
+        renderBusy = true
+        DispatchQueue.global(qos: .userInteractive).async {
+            var images = [NSImage?](repeating: nil, count: icons.count)
+            DispatchQueue.concurrentPerform(iterations: icons.count) { index in
+                images[index] = Ruyi.image(data: icons[index].data, options: options)
+            }
+
+            var next: [String: NSImage] = [:]
+            next.reserveCapacity(icons.count)
+            for (icon, image) in zip(icons, images) {
+                if let image {
+                    next[icon.name] = image
                 }
             }
-            .pickerStyle(.segmented)
-            .labelsHidden()
-            .frame(maxWidth: 360)
+
+            DispatchQueue.main.async {
+                if generation == renderGeneration {
+                    rendered = next
+                }
+                renderBusy = false
+                if generation != renderGeneration {
+                    kickRender()
+                } else {
+                    isRendering = false
+                }
+            }
         }
     }
 }
@@ -87,6 +199,8 @@ struct ContentView: View {
 // MARK: - Solid workspace (same hot path as `main`, isolated state)
 
 private struct SolidWorkspace: View {
+    @Binding var tintMode: TintMode
+
     @State private var color = Color.white
     @State private var hexText = "#FFFFFF"
     @State private var strokeWidth: Double = 2
@@ -136,6 +250,9 @@ private struct SolidWorkspace: View {
 
     private var sidebar: some View {
         VStack(alignment: .leading, spacing: 22) {
+            ModePickerView(tintMode: $tintMode)
+                .equatable()
+
             header(reset: reset)
 
             Text("Ruyi renders your SVGs with live size, color and stroke controls.")
@@ -143,22 +260,8 @@ private struct SolidWorkspace: View {
                 .foregroundStyle(.white.opacity(0.55))
                 .fixedSize(horizontal: false, vertical: true)
 
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Color")
-                    .font(.system(size: 12, weight: .medium))
-                    .foregroundStyle(.white.opacity(0.7))
-                HStack(spacing: 10) {
-                    ColorPicker("", selection: $color, supportsOpacity: false)
-                        .labelsHidden()
-                        .frame(width: 36, height: 28)
-                    TextField("", text: $hexText)
-                        .textFieldStyle(.plain)
-                        .font(.system(size: 13, design: .monospaced))
-                        .padding(8)
-                        .background(RoundedRectangle(cornerRadius: 8).fill(Color.white.opacity(0.08)))
-                        .foregroundStyle(.white)
-                }
-            }
+            SolidColorControls(color: $color, hexText: $hexText)
+                .equatable()
 
             sliderRow(
                 title: "Stroke width",
@@ -258,7 +361,7 @@ private struct SolidWorkspace: View {
 // MARK: - Gradient workspace (own state + render loop)
 
 private struct GradientWorkspace: View {
-    let tintMode: TintMode
+    @Binding var tintMode: TintMode
 
     @State private var stop0 = Color(red: 0.95, green: 0.35, blue: 0.45)
     @State private var stop1 = Color(red: 1.0, green: 0.75, blue: 0.2)
@@ -340,6 +443,9 @@ private struct GradientWorkspace: View {
 
     private var sidebar: some View {
         VStack(alignment: .leading, spacing: 22) {
+            ModePickerView(tintMode: $tintMode)
+                .equatable()
+
             header(reset: reset)
 
             Text("Gradient tint. Edit stops in the sheet; stroke/size stay live.")
@@ -432,7 +538,8 @@ private struct GradientWorkspace: View {
         stops.append(.init(offset: 1, color: NSColor(stop2)))
 
         switch tintMode {
-        case .solid:
+        case .original, .solid:
+            // Unreachable in GradientWorkspace; keep a safe fallback.
             return .linear(stops: stops, direction: .topToBottom)
         case .linear:
             return .linear(stops: stops, direction: currentLinearDirection)
@@ -554,6 +661,35 @@ private struct SolidDefaults {
     let strokeWidth: Double = 2
     let size: Double = 24
     let absoluteStrokeWidth = true
+}
+
+/// Keep ColorPicker out of stroke/size rebuilds (same issue as ModePickerView).
+private struct SolidColorControls: View, Equatable {
+    @Binding var color: Color
+    @Binding var hexText: String
+
+    static func == (lhs: SolidColorControls, rhs: SolidColorControls) -> Bool {
+        lhs.color == rhs.color && lhs.hexText == rhs.hexText
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Color")
+                .font(.system(size: 12, weight: .medium))
+                .foregroundStyle(.white.opacity(0.7))
+            HStack(spacing: 10) {
+                ColorPicker("", selection: $color, supportsOpacity: false)
+                    .labelsHidden()
+                    .frame(width: 36, height: 28)
+                TextField("", text: $hexText)
+                    .textFieldStyle(.plain)
+                    .font(.system(size: 13, design: .monospaced))
+                    .padding(8)
+                    .background(RoundedRectangle(cornerRadius: 8).fill(Color.white.opacity(0.08)))
+                    .foregroundStyle(.white)
+            }
+        }
+    }
 }
 
 private struct IconGrid: View {
@@ -678,7 +814,7 @@ private struct GradientSummaryView: View, Equatable {
     @ViewBuilder
     private var preview: some View {
         switch tintMode {
-        case .solid:
+        case .original, .solid:
             EmptyView()
         case .linear:
             let ends = linearDirection.unitEndpoints
