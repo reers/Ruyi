@@ -30,6 +30,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.TileMode
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.MaterialTheme
@@ -498,35 +502,40 @@ private fun GradientPreview(
     centerY: Float,
     radius: Float,
 ) {
-    val colors = buildList {
-        add(Color(stop0))
-        if (useMid) add(Color(stop1))
-        add(Color(stop2))
-    }
-    val stops = buildList {
-        add(0f)
-        if (useMid) add(midOffset)
-        add(1f)
-    }
-    val brush = if (tintMode == TintMode.Linear) {
-        val ends = Ruyi.GradientTint.linearAngle(angle)
-        Brush.linearGradient(
-            colorStops = stops.zip(colors).toTypedArray(),
-            start = androidx.compose.ui.geometry.Offset(ends[0] * 200f, ends[1] * 56f),
-            end = androidx.compose.ui.geometry.Offset(ends[2] * 200f, ends[3] * 56f),
-        )
-    } else {
-        Brush.radialGradient(
-            colorStops = stops.zip(colors).toTypedArray(),
-            center = androidx.compose.ui.geometry.Offset(centerX * 200f, centerY * 56f),
-            radius = 40f * radius,
-        )
-    }
+    val colorStops = buildList {
+        add(0f to Color(stop0))
+        if (useMid) add(midOffset to Color(stop1))
+        add(1f to Color(stop2))
+    }.toTypedArray()
+    val shape = RoundedCornerShape(8.dp)
     Box(
         Modifier
             .fillMaxWidth()
             .height(if (tintMode == TintMode.Linear) 28.dp else 56.dp)
-            .background(brush, RoundedCornerShape(8.dp)),
+            .clip(shape)
+            // Map normalized 0…1 geometry onto the real bar size — hardcoding
+            // 200×56px made LTR/radial previews look clipped into the top-left.
+            .drawBehind {
+                val w = size.width
+                val h = size.height
+                val brush = if (tintMode == TintMode.Linear) {
+                    val ends = Ruyi.GradientTint.linearAngle(angle)
+                    Brush.linearGradient(
+                        colorStops = colorStops,
+                        start = Offset(ends[0] * w, ends[1] * h),
+                        end = Offset(ends[2] * w, ends[3] * h),
+                        tileMode = TileMode.Clamp,
+                    )
+                } else {
+                    Brush.radialGradient(
+                        colorStops = colorStops,
+                        center = Offset(centerX * w, centerY * h),
+                        radius = (kotlin.math.min(w, h) * radius).coerceAtLeast(1f),
+                        tileMode = TileMode.Clamp,
+                    )
+                }
+                drawRect(brush)
+            },
     )
 }
 
