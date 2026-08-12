@@ -108,14 +108,16 @@ bool ParseCommonArgs(napi_env env, napi_value *args, size_t argc, size_t base, R
                     size_t cOff = 0;
                     napi_get_typedarray_info(env, args[base + 9], &cType, &cLen, &cData, &cBuf, &cOff);
                     if ((cType == napi_int32_array || cType == napi_uint32_array) && cData != nullptr) {
-                        auto *colors = static_cast<int32_t *>(cData);
+                        // Must read as unsigned: 0xAARRGGBB with AA>=0x80 is negative as int32,
+                        // and arithmetic >> corrupts R/G channels (hard two-tone gradients).
+                        auto *colors = static_cast<const uint32_t *>(cData);
                         const size_t n = std::min(length, cLen);
                         out.stops.clear();
                         out.stops.reserve(n);
                         for (size_t i = 0; i < n; ++i) {
                             thorvg_render::ColorStop stop;
                             stop.offset = offsets[i];
-                            const int32_t argb = colors[i];
+                            const uint32_t argb = colors[i];
                             stop.a = static_cast<uint8_t>((argb >> 24) & 0xff);
                             stop.r = static_cast<uint8_t>((argb >> 16) & 0xff);
                             stop.g = static_cast<uint8_t>((argb >> 8) & 0xff);
@@ -185,7 +187,16 @@ napi_value BufferFromPixels(napi_env env, const std::vector<uint32_t> &pixels) {
         napi_get_null(env, &nullVal);
         return nullVal;
     }
-    std::memcpy(outData, pixels.data(), byteLen);
+    // ThorVG: premul 0xAARRGGBB words → premul RGBA bytes for RGBA_8888+PREMUL.
+    auto *dst = static_cast<uint8_t *>(outData);
+    for (size_t i = 0; i < pixels.size(); ++i) {
+        const uint32_t argb = pixels[i];
+        const size_t o = i * 4;
+        dst[o + 0] = static_cast<uint8_t>((argb >> 16) & 0xff); // R
+        dst[o + 1] = static_cast<uint8_t>((argb >> 8) & 0xff);  // G
+        dst[o + 2] = static_cast<uint8_t>(argb & 0xff);         // B
+        dst[o + 3] = static_cast<uint8_t>((argb >> 24) & 0xff); // A
+    }
     return buffer;
 }
 

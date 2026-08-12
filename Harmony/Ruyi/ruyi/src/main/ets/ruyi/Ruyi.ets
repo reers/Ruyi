@@ -36,7 +36,11 @@ export class GradientTint {
     const rad = degrees * Math.PI / 180;
     const dx = Math.cos(rad);
     const dy = Math.sin(rad);
-    const extent = 0.5 * Math.SQRT2;
+    // CSS-style "cover the box" half-length: axis-aligned angles (0/90/…) span
+    // edge-to-edge so both endpoints are visible; diagonals still reach the
+    // corners. A fixed 0.5·√2 only fit 45° and pushed the end stops off-canvas
+    // for vertical/horizontal gradients (icons looked washed toward the mid stop).
+    const extent = 0.5 * (Math.abs(dx) + Math.abs(dy));
     return GradientTint.linear(
       stops,
       0.5 - dx * extent,
@@ -166,6 +170,8 @@ export class Ruyi {
       return undefined;
     }
     const offsets = new Float32Array(gradient.stops.length);
+    // ArkTS has no Uint32Array union ergonomics here; Int32 stores the same bits.
+    // Native reads them as uint32_t so AA>=0x80 stays correct.
     const colors = new Int32Array(gradient.stops.length);
     for (let i = 0; i < gradient.stops.length; i++) {
       offsets[i] = Math.min(1, Math.max(0, gradient.stops[i].offset));
@@ -175,13 +181,20 @@ export class Ruyi {
     for (let i = 0; i < gradient.geom.length; i++) {
       geom[i] = gradient.geom[i];
     }
-    return { kind: gradient.kind, offsets, colors, geom };
+    return new PackedGradient(gradient.kind, offsets, colors, geom);
   }
 }
 
-interface PackedGradient {
+class PackedGradient {
   kind: number;
   offsets: Float32Array;
   colors: Int32Array;
   geom: Float32Array;
+
+  constructor(kind: number, offsets: Float32Array, colors: Int32Array, geom: Float32Array) {
+    this.kind = kind;
+    this.offsets = offsets;
+    this.colors = colors;
+    this.geom = geom;
+  }
 }

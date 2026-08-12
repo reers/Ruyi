@@ -203,10 +203,11 @@ std::vector<uint32_t> renderSvg(const RenderRequest &req) {
 
     if (style.gradKind == GradKind::None && req.argb != 0) {
         style.hasColor = true;
-        style.a = static_cast<uint8_t>((req.argb >> 24) & 0xff);
-        style.r = static_cast<uint8_t>((req.argb >> 16) & 0xff);
-        style.g = static_cast<uint8_t>((req.argb >> 8) & 0xff);
-        style.b = static_cast<uint8_t>(req.argb & 0xff);
+        const uint32_t argb = static_cast<uint32_t>(req.argb);
+        style.a = static_cast<uint8_t>((argb >> 24) & 0xff);
+        style.r = static_cast<uint8_t>((argb >> 16) & 0xff);
+        style.g = static_cast<uint8_t>((argb >> 8) & 0xff);
+        style.b = static_cast<uint8_t>(argb & 0xff);
     }
 
     if (req.strokeWidth >= 0.f) {

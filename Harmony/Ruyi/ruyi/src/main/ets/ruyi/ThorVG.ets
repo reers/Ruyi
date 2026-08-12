@@ -4,6 +4,8 @@ import ruyiNative from 'libruyi.so';
 /**
  * Internal ThorVG bridge (NAPI → Prefab/HAR `libthorvg.so` C API).
  * Not part of the public Ruyi API — use {@link Ruyi} instead.
+ *
+ * Native emits premul RGBA8888; PixelMap is RGBA_8888 + PREMUL.
  */
 export class ThorVG {
   static version(): string {
@@ -12,7 +14,7 @@ export class ThorVG {
 
   /**
    * Render SVG → PixelMap.
-   * Native work is async (worker thread); PixelMap creation uses BGRA_8888 directly.
+   * Native work is async; buffer is premul RGBA8888 (swizzled in napi).
    */
   static async renderSvg(
     svg: string | ArrayBuffer,
@@ -99,25 +101,32 @@ export class ThorVG {
     return out;
   }
 
-  /**
-   * ThorVG writes uint32 0xAARRGGBB; on little-endian memory that is B,G,R,A —
-   * which matches Harmony `BGRA_8888` + PREMUL.
-   */
   private static pixelMapFromNative(
-    argbBuffer: ArrayBuffer,
+    rgbaBuffer: ArrayBuffer,
     widthPx: number,
     heightPx: number,
   ): image.PixelMap | undefined {
     const opts: image.InitializationOptions = {
       size: { width: widthPx, height: heightPx },
-      pixelFormat: image.PixelMapFormat.BGRA_8888,
+      srcPixelFormat: image.PixelMapFormat.RGBA_8888,
+      pixelFormat: image.PixelMapFormat.RGBA_8888,
       editable: false,
       alphaType: image.AlphaType.PREMUL,
     };
     try {
-      return image.createPixelMapSync(argbBuffer, opts);
+      return image.createPixelMapSync(rgbaBuffer, opts);
     } catch (_e) {
-      return undefined;
+      try {
+        const fallback: image.InitializationOptions = {
+          size: { width: widthPx, height: heightPx },
+          pixelFormat: image.PixelMapFormat.RGBA_8888,
+          editable: false,
+          alphaType: image.AlphaType.PREMUL,
+        };
+        return image.createPixelMapSync(rgbaBuffer, fallback);
+      } catch (_e2) {
+        return undefined;
+      }
     }
   }
 }

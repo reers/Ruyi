@@ -45,7 +45,8 @@ int engineTerm();
 std::string version();
 
 /**
- * Render SVG → ARGB8888 premultiplied pixels (same packing as Android 0xAARRGGBB).
+ * Render SVG → ARGB8888 premultiplied pixels (uint32 0xAARRGGBB).
+ * LE memory is B,G,R,A — same bits Android puts in Bitmap via setPixels(ARGB_8888).
  * Empty vector means failure.
  */
 std::vector<uint32_t> renderSvg(const RenderRequest &req);
