@@ -117,7 +117,7 @@ export class ThorVG {
     }
     const stroke: number = (strokeWidth === undefined) ? -1 : strokeWidth;
     const design: number = (designSize === undefined) ? Math.min(widthPx, heightPx) : designSize;
-    const buffers: ArrayBuffer[] = await ruyiNative.renderSvgBatch(
+    const buffers: (ArrayBuffer | null | undefined)[] = await ruyiNative.renderSvgBatch(
       svgs,
       widthPx,
       heightPx,
@@ -163,7 +163,7 @@ export class ThorVG {
     }
     const stroke: number = (strokeWidth === undefined) ? -1 : strokeWidth;
     const design: number = (designSize === undefined) ? Math.min(widthPx, heightPx) : designSize;
-    const buffers: ArrayBuffer[] = await ruyiNative.renderSvgBatch(
+    const buffers: (ArrayBuffer | null | undefined)[] = await ruyiNative.renderSvgBatch(
       svgs,
       widthPx,
       heightPx,
@@ -175,6 +175,236 @@ export class ThorVG {
       gradientKind,
       stopOffsets,
       stopColors,
+      gradGeom,
+    );
+    const out: (ArrayBuffer | undefined)[] = [];
+    for (let i = 0; i < buffers.length; i++) {
+      const buf = buffers[i];
+      out.push((buf === null || buf === undefined || buf.byteLength === 0) ? undefined : buf);
+    }
+    return out;
+  }
+
+  static async composeGradientMask(
+    maskBuffer: ArrayBuffer,
+    widthPx: number,
+    heightPx: number,
+    gradientKind: number,
+    stopOffsets: Float32Array,
+    stopColors: Int32Array,
+    gradGeom: Float32Array,
+  ): Promise<ArrayBuffer | undefined> {
+    if (widthPx <= 0 || heightPx <= 0 || gradientKind === 0) {
+      return undefined;
+    }
+    const nativeBuffer: ArrayBuffer | null = await ruyiNative.composeGradientMask(
+      maskBuffer,
+      widthPx,
+      heightPx,
+      0,
+      -1,
+      false,
+      Math.min(widthPx, heightPx),
+      24,
+      gradientKind,
+      stopOffsets,
+      ThorVG.colorArray(stopColors),
+      gradGeom,
+    );
+    if (nativeBuffer === null) {
+      return undefined;
+    }
+    return nativeBuffer;
+  }
+
+  static async composeGradientMasks(
+    maskBuffers: (ArrayBuffer | undefined)[],
+    widthPx: number,
+    heightPx: number,
+    gradientKind: number,
+    stopOffsets: Float32Array,
+    stopColors: Int32Array,
+    gradGeom: Float32Array,
+  ): Promise<(ArrayBuffer | undefined)[]> {
+    if (maskBuffers.length === 0 || widthPx <= 0 || heightPx <= 0 || gradientKind === 0) {
+      return [];
+    }
+    const buffers: (ArrayBuffer | null | undefined)[] = await ruyiNative.composeGradientMasks(
+      maskBuffers,
+      widthPx,
+      heightPx,
+      0,
+      -1,
+      false,
+      Math.min(widthPx, heightPx),
+      24,
+      gradientKind,
+      stopOffsets,
+      ThorVG.colorArray(stopColors),
+      gradGeom,
+    );
+    const out: (ArrayBuffer | undefined)[] = [];
+    for (let i = 0; i < buffers.length; i++) {
+      const buf = buffers[i];
+      out.push((buf === null || buf === undefined || buf.byteLength === 0) ? undefined : buf);
+    }
+    return out;
+  }
+
+  private static colorArray(colors: Int32Array): number[] {
+    const out: number[] = [];
+    for (let i = 0; i < colors.length; i++) {
+      out.push(colors[i]);
+    }
+    return out;
+  }
+
+  /**
+   * Render SVG as a white alpha mask, then apply an icon-wide gradient in the
+   * native worker. This keeps the correct mask-based tint model while avoiding
+   * ArkTS per-pixel work during live slider updates.
+   */
+  static async renderSvgMaskGradient(
+    svg: string | ArrayBuffer,
+    widthPx: number,
+    heightPx: number,
+    maskArgb: number = 0xFFFFFFFF,
+    strokeWidth?: number,
+    absoluteStrokeWidth: boolean = false,
+    designSize?: number,
+    referenceSize: number = 24,
+    gradientKind: number = 0,
+    stopOffsets?: Float32Array,
+    stopColors?: Int32Array,
+    gradGeom?: Float32Array,
+  ): Promise<image.PixelMap | undefined> {
+    const nativeBuffer = await ThorVG.renderSvgMaskGradientRgba(
+      svg,
+      widthPx,
+      heightPx,
+      maskArgb,
+      strokeWidth,
+      absoluteStrokeWidth,
+      designSize,
+      referenceSize,
+      gradientKind,
+      stopOffsets,
+      stopColors,
+      gradGeom,
+    );
+    if (!nativeBuffer) {
+      return undefined;
+    }
+    return ThorVG.pixelMapFromRgba(nativeBuffer, widthPx, heightPx);
+  }
+
+  static async renderSvgMaskGradientRgba(
+    svg: string | ArrayBuffer,
+    widthPx: number,
+    heightPx: number,
+    maskArgb: number = 0xFFFFFFFF,
+    strokeWidth?: number,
+    absoluteStrokeWidth: boolean = false,
+    designSize?: number,
+    referenceSize: number = 24,
+    gradientKind: number = 0,
+    stopOffsets?: Float32Array,
+    stopColors?: Int32Array,
+    gradGeom?: Float32Array,
+  ): Promise<ArrayBuffer | undefined> {
+    if (widthPx <= 0 || heightPx <= 0 || gradientKind === 0 || !stopOffsets || !stopColors || !gradGeom) {
+      return undefined;
+    }
+    const stroke: number = (strokeWidth === undefined) ? -1 : strokeWidth;
+    const design: number = (designSize === undefined) ? Math.min(widthPx, heightPx) : designSize;
+    const nativeBuffer: ArrayBuffer | null = await ruyiNative.renderSvgMaskGradient(
+      svg,
+      widthPx,
+      heightPx,
+      maskArgb,
+      stroke,
+      absoluteStrokeWidth,
+      design,
+      referenceSize,
+      gradientKind,
+      stopOffsets,
+      ThorVG.colorArray(stopColors),
+      gradGeom,
+    );
+    if (nativeBuffer === null) {
+      return undefined;
+    }
+    return nativeBuffer;
+  }
+
+  static async renderSvgBatchMaskGradient(
+    svgs: string[],
+    widthPx: number,
+    heightPx: number,
+    maskArgb: number = 0xFFFFFFFF,
+    strokeWidth?: number,
+    absoluteStrokeWidth: boolean = false,
+    designSize?: number,
+    referenceSize: number = 24,
+    gradientKind: number = 0,
+    stopOffsets?: Float32Array,
+    stopColors?: Int32Array,
+    gradGeom?: Float32Array,
+  ): Promise<(image.PixelMap | undefined)[]> {
+    const buffers = await ThorVG.renderSvgBatchMaskGradientRgba(
+      svgs,
+      widthPx,
+      heightPx,
+      maskArgb,
+      strokeWidth,
+      absoluteStrokeWidth,
+      designSize,
+      referenceSize,
+      gradientKind,
+      stopOffsets,
+      stopColors,
+      gradGeom,
+    );
+    const out: (image.PixelMap | undefined)[] = [];
+    for (let i = 0; i < buffers.length; i++) {
+      const buf = buffers[i];
+      out.push(buf ? ThorVG.pixelMapFromRgba(buf, widthPx, heightPx) : undefined);
+    }
+    return out;
+  }
+
+  static async renderSvgBatchMaskGradientRgba(
+    svgs: string[],
+    widthPx: number,
+    heightPx: number,
+    maskArgb: number = 0xFFFFFFFF,
+    strokeWidth?: number,
+    absoluteStrokeWidth: boolean = false,
+    designSize?: number,
+    referenceSize: number = 24,
+    gradientKind: number = 0,
+    stopOffsets?: Float32Array,
+    stopColors?: Int32Array,
+    gradGeom?: Float32Array,
+  ): Promise<(ArrayBuffer | undefined)[]> {
+    if (svgs.length === 0 || widthPx <= 0 || heightPx <= 0 ||
+      gradientKind === 0 || !stopOffsets || !stopColors || !gradGeom) {
+      return [];
+    }
+    const stroke: number = (strokeWidth === undefined) ? -1 : strokeWidth;
+    const design: number = (designSize === undefined) ? Math.min(widthPx, heightPx) : designSize;
+    const buffers: (ArrayBuffer | null | undefined)[] = await ruyiNative.renderSvgBatchMaskGradient(
+      svgs,
+      widthPx,
+      heightPx,
+      maskArgb,
+      stroke,
+      absoluteStrokeWidth,
+      design,
+      referenceSize,
+      gradientKind,
+      stopOffsets,
+      ThorVG.colorArray(stopColors),
       gradGeom,
     );
     const out: (ArrayBuffer | undefined)[] = [];
