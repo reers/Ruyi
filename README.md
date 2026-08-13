@@ -8,8 +8,9 @@ Scale and tint your own SVGs — **no built-in icon set**.
 ## What it does
 
 - Render SVG source strings, files, or bundled resources into platform-native images.
-- Keep original SVG colors, apply a solid tint, or apply an icon-wide linear / radial gradient tint.
+- Keep original SVG colors or apply a solid tint with the common `size` / `color` / `strokeWidth` API.
 - Override stroke width with either fixed logical units or Lucide-style scaling from a reference size.
+- Gradient tint is also available through `GradientTint` for icon-wide linear or radial effects.
 - Use the same rendering model across Apple, Android, and HarmonyOS, backed by ThorVG.
 
 ## Repository layout
@@ -32,9 +33,10 @@ Harmony/
     ruyidemo/              # Demo HAP
 ```
 
----
+## Platforms
 
-## Apple (SPM)
+<details>
+<summary><strong>Apple (SPM)</strong></summary>
 
 ### Platforms
 
@@ -63,19 +65,7 @@ let image = Ruyi.image(
     data: svgData,
     options: .init(
         size: CGSize(width: 40, height: 40),
-        gradient: .linear(
-            stops: [
-                Ruyi.GradientStop(
-                    offset: 0,
-                    color: RuyiColor(red: 0.95, green: 0.35, blue: 0.45, alpha: 1)
-                ),
-                Ruyi.GradientStop(
-                    offset: 1,
-                    color: RuyiColor(red: 0.35, green: 0.55, blue: 1.0, alpha: 1)
-                ),
-            ],
-            direction: .angle(90)
-        ),
+        color: .systemRed,
         strokeWidth: 2
     )
 )
@@ -118,9 +108,10 @@ macOS CLI fallback: `cd Apple/RuyiDemo && ./run.sh`
 
 [ThorVG](https://github.com/thorvg/thorvg) via SPM binary package [`vnixx/thorvg.ruyi`](https://github.com/vnixx/thorvg.ruyi) (CPU raster + SVG + C API).
 
----
+</details>
 
-## Android (Maven)
+<details>
+<summary><strong>Android (Maven)</strong></summary>
 
 ### Platforms
 
@@ -144,13 +135,7 @@ val bitmap = Ruyi.image(
     svgString,
     Ruyi.Options(
         sizeDp = 40f,
-        gradient = Ruyi.GradientTint.linear(
-            stops = listOf(
-                Ruyi.GradientStop(0f, 0xFFF25973.toInt()),
-                Ruyi.GradientStop(1f, 0xFF598CFF.toInt()),
-            ),
-            angleDegrees = 90f,
-        ),
+        color = 0xFFFF0000.toInt(),
         strokeWidth = 2f,
         density = resources.displayMetrics.density,
     ),
@@ -176,9 +161,10 @@ Open `Android/Ruyi` in Android Studio. Sample icons live in `ruyidemo/src/main/a
 
 See [`Android/Ruyi/PUBLISHING.md`](Android/Ruyi/PUBLISHING.md). Coordinates: **`io.github.reers:ruyi`**.
 
----
+</details>
 
-## HarmonyOS (OHPM)
+<details>
+<summary><strong>HarmonyOS (OHPM)</strong></summary>
 
 ### Platforms
 
@@ -202,19 +188,16 @@ Or in `oh-package.json5`:
 ### Usage
 
 ```ts
-import { Ruyi, GradientStop, GradientTint } from '@reers/ruyi';
+import { Ruyi } from '@reers/ruyi';
 import { display } from '@kit.ArkUI';
 
 const density = display.getDefaultDisplaySync().densityDPI / 160;
 
 const pixelMap = await Ruyi.image(svgString, {
   size: 40,
+  color: 0xFFFF0000,  // ARGB
   strokeWidth: 2,
   density,
-  gradient: GradientTint.linearAngle([
-    new GradientStop(0, 0xFFF25973),
-    new GradientStop(1, 0xFF598CFF),
-  ], 90),
 });
 
 const maps = await Ruyi.imageBatch(svgStrings, {
@@ -224,17 +207,11 @@ const maps = await Ruyi.imageBatch(svgStrings, {
 });
 ```
 
-Only `size` is required in Harmony options. `color`, `gradient`, `strokeWidth`,
-`absoluteStrokeWidth`, `referenceSize`, and `density` can be omitted; pass the
-current display density when you want vp output to resolve to physical pixels.
+Only `size` is required in Harmony options. Other rendering options can be
+omitted; pass the current display density when you want vp output to resolve to
+physical pixels.
 
 Engine lazy-inits on first render (no public `engineInit` / `engineTerm`).
-
-Gradient tint on Harmony uses a native mask-composition path. Apple and Android
-can inject gradients into ThorVG paints directly, while Harmony renders a white
-alpha mask and applies the icon-wide gradient in C++ before creating the
-`PixelMap`. This keeps the result aligned with the public API semantics and
-avoids per-pixel ArkTS work during live size / stroke updates.
 
 ### Demo
 
@@ -254,7 +231,7 @@ More detail: [`Harmony/Ruyi/README.md`](Harmony/Ruyi/README.md).
 
 Coordinates: **`@reers/ruyi`**.
 
----
+</details>
 
 ## License
 
