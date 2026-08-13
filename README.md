@@ -5,9 +5,16 @@ Scale and tint your own SVGs — **no built-in icon set**.
 
 > 如意金箍棒：能大能小 — vector graphics that scale freely.
 
+## What it does
+
+- Render SVG source strings, files, or bundled resources into platform-native images.
+- Keep original SVG colors, apply a solid tint, or apply an icon-wide linear / radial gradient tint.
+- Override stroke width with either fixed logical units or Lucide-style scaling from a reference size.
+- Use the same rendering model across Apple, Android, and HarmonyOS, backed by ThorVG.
+
 ## Repository layout
 
-MMKV-style multi-platform monorepo:
+Multi-platform monorepo:
 
 ```text
 Package.swift              # SPM entry (path → Apple/Sources/Ruyi)
@@ -52,13 +59,26 @@ dependencies: [
 ```swift
 import Ruyi
 
-let options = Ruyi.Options(
-    size: CGSize(width: 24, height: 24),
-    color: .systemRed,
-    strokeWidth: 2
+let image = Ruyi.image(
+    data: svgData,
+    options: .init(
+        size: CGSize(width: 40, height: 40),
+        gradient: .linear(
+            stops: [
+                Ruyi.GradientStop(
+                    offset: 0,
+                    color: RuyiColor(red: 0.95, green: 0.35, blue: 0.45, alpha: 1)
+                ),
+                Ruyi.GradientStop(
+                    offset: 1,
+                    color: RuyiColor(red: 0.35, green: 0.55, blue: 1.0, alpha: 1)
+                ),
+            ],
+            direction: .angle(90)
+        ),
+        strokeWidth: 2
+    )
 )
-
-let image = Ruyi.image(data: svgData, options: options)
 ```
 
 Also:
@@ -120,14 +140,22 @@ dependencies {
 ```kotlin
 import io.github.reers.ruyi.Ruyi
 
-val options = Ruyi.Options(
-    sizeDp = 24f,
-    color = 0xFFFF0000.toInt(),
-    strokeWidth = 2f,
-    density = resources.displayMetrics.density,
+val bitmap = Ruyi.image(
+    svgString,
+    Ruyi.Options(
+        sizeDp = 40f,
+        gradient = Ruyi.GradientTint.linear(
+            stops = listOf(
+                Ruyi.GradientStop(0f, 0xFFF25973.toInt()),
+                Ruyi.GradientStop(1f, 0xFF598CFF.toInt()),
+            ),
+            angleDegrees = 90f,
+        ),
+        strokeWidth = 2f,
+        density = resources.displayMetrics.density,
+    ),
 )
 
-val bitmap = Ruyi.image(svgString, options)
 // or: Ruyi.image(context, "heart", options)
 ```
 
@@ -174,24 +202,39 @@ Or in `oh-package.json5`:
 ### Usage
 
 ```ts
-import { Ruyi, RuyiOptions } from '@reers/ruyi';
+import { Ruyi, GradientStop, GradientTint } from '@reers/ruyi';
 import { display } from '@kit.ArkUI';
 
 const density = display.getDefaultDisplaySync().densityDPI / 160;
-const options = new RuyiOptions(
-  24,                 // sizeVp
-  0xFFFF0000,         // color ARGB (optional)
-  2,                  // strokeWidth pt (optional)
-  true,               // absoluteStrokeWidth
-  24,                 // referenceSize
-  density,
-);
 
-const pixelMap = await Ruyi.image(svgString, options);
-// or: await Ruyi.imageBatch(svgStrings, options)
+const pixelMap = await Ruyi.image(svgString, {
+  size: 40,
+  strokeWidth: 2,
+  density,
+  gradient: GradientTint.linearAngle([
+    new GradientStop(0, 0xFFF25973),
+    new GradientStop(1, 0xFF598CFF),
+  ], 90),
+});
+
+const maps = await Ruyi.imageBatch(svgStrings, {
+  size: 24,
+  color: 0xFFFF0000,  // ARGB
+  density,
+});
 ```
 
+Only `size` is required in Harmony options. `color`, `gradient`, `strokeWidth`,
+`absoluteStrokeWidth`, `referenceSize`, and `density` can be omitted; pass the
+current display density when you want vp output to resolve to physical pixels.
+
 Engine lazy-inits on first render (no public `engineInit` / `engineTerm`).
+
+Gradient tint on Harmony uses a native mask-composition path. Apple and Android
+can inject gradients into ThorVG paints directly, while Harmony renders a white
+alpha mask and applies the icon-wide gradient in C++ before creating the
+`PixelMap`. This keeps the result aligned with the public API semantics and
+avoids per-pixel ArkTS work during live size / stroke updates.
 
 ### Demo
 
