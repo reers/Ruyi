@@ -2,6 +2,8 @@
 
 #include <algorithm>
 #include <mutex>
+#include <string>
+#include <unordered_set>
 #include <vector>
 
 #include "thorvg_capi.h"
@@ -22,6 +24,41 @@ struct StyleCtx {
     float x1 = 0, y1 = 0, x2 = 0, y2 = 0;
     float cx = 0, cy = 0, radius = 0, fx = 0, fy = 0, fr = 0;
 };
+
+struct SvgLoadData {
+    const char *data = nullptr;
+    uint32_t length = 0;
+    bool copy = true;
+};
+
+constexpr size_t kMaxCachedSvgData = 256;
+std::mutex gSvgDataCacheMutex;
+std::unordered_set<std::string> gSvgDataCache;
+
+SvgLoadData svgLoadDataFor(const RenderRequest &req) {
+    SvgLoadData out{req.svgData, req.svgLength, true};
+    if (req.svgData == nullptr || req.svgLength == 0) {
+        return out;
+    }
+
+    std::string key(req.svgData, req.svgData + req.svgLength);
+    std::lock_guard<std::mutex> lock(gSvgDataCacheMutex);
+    auto it = gSvgDataCache.find(key);
+    if (it == gSvgDataCache.end()) {
+        if (gSvgDataCache.size() >= kMaxCachedSvgData) {
+            return out;
+        }
+        it = gSvgDataCache.emplace(std::move(key)).first;
+    }
+
+    // ThorVG caches load_data() by the source address when copy=false. ArkTS
+    // strings arrive through NAPI with a fresh address on every slider tick, so
+    // keeping one native copy per SVG lets ThorVG reuse parsed picture data.
+    out.data = it->c_str();
+    out.length = static_cast<uint32_t>(it->size());
+    out.copy = false;
+    return out;
+}
 
 Tvg_Gradient makeGradient(const StyleCtx &ctx) {
     if (ctx.stops.size() < 2) {
@@ -98,7 +135,12 @@ bool applyStyle(Tvg_Paint paint, void *data) {
 
 void ensureEngine() {
     static std::once_flag once;
-    std::call_once(once, [] { (void)tvg_engine_init(0); });
+    std::call_once(once, [] {
+        // Harmony's verified gradient path rasterizes a white SVG mask before
+        // applying the icon-wide tint. Give ThorVG a small worker pool so large
+        // masks can update/draw asynchronously without saturating all CPU cores.
+        (void)tvg_engine_init(2);
+    });
 }
 
 int engineInit(unsigned threads) {
@@ -140,13 +182,14 @@ std::vector<uint32_t> renderSvg(const RenderRequest &req) {
         }
     };
 
+    const SvgLoadData svgLoadData = svgLoadDataFor(req);
     const auto load = tvg_picture_load_data(
         picture,
-        req.svgData,
-        req.svgLength,
+        svgLoadData.data,
+        svgLoadData.length,
         "svg",
         nullptr,
-        true
+        svgLoadData.copy
     );
     if (load != TVG_RESULT_SUCCESS) {
         releasePicture();

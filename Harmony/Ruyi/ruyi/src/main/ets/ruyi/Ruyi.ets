@@ -147,7 +147,7 @@ export class Ruyi {
         packed.colors,
         packed.geom,
       );
-      return rgba ? ThorVG.pixelMapFromRgba(rgba, sizePx, sizePx) : undefined;
+      return rgba ? await ThorVG.pixelMapFromRgba(rgba, sizePx, sizePx) : undefined;
     }
     return ThorVG.renderSvg(
       svg,
@@ -188,12 +188,7 @@ export class Ruyi {
         packed.colors,
         packed.geom,
       );
-      const out: (image.PixelMap | undefined)[] = [];
-      for (let i = 0; i < buffers.length; i++) {
-        const buf = buffers[i];
-        out.push(buf ? ThorVG.pixelMapFromRgba(buf, sizePx, sizePx) : undefined);
-      }
-      return out;
+      return ThorVG.pixelMapsFromRgbaBuffers(buffers, sizePx, sizePx);
     }
     return ThorVG.renderSvgBatch(
       svgs,

@@ -311,7 +311,6 @@ struct OriginalWorkspace {
                 .width(Math.min(this.sizeVp, 76))
                 .height(Math.min(this.sizeVp, 76))
                 .objectFit(ImageFit.Contain)
-                .syncLoad(true)
             }
           }
           .width(88)
@@ -531,7 +530,6 @@ struct SolidWorkspace {
                 .width(Math.min(this.sizeVp, 76))
                 .height(Math.min(this.sizeVp, 76))
                 .objectFit(ImageFit.Contain)
-                .syncLoad(true)
             }
           }
           .width(88)
@@ -833,7 +831,6 @@ struct GradientWorkspace {
                 .width(Math.min(this.sizeVp, 76))
                 .height(Math.min(this.sizeVp, 76))
                 .objectFit(ImageFit.Contain)
-                .syncLoad(true)
             }
           }
           .width(88)

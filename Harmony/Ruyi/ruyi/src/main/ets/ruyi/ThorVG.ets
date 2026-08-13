@@ -131,16 +131,7 @@ export class ThorVG {
       stopColors,
       gradGeom,
     );
-    const out: (image.PixelMap | undefined)[] = [];
-    for (let i = 0; i < buffers.length; i++) {
-      const buf = buffers[i];
-      if (buf === null || buf === undefined || buf.byteLength === 0) {
-        out.push(undefined);
-      } else {
-        out.push(ThorVG.pixelMapFromRgba(buf, widthPx, heightPx));
-      }
-    }
-    return out;
+    return ThorVG.pixelMapsFromRgbaBuffers(buffers, widthPx, heightPx);
   }
 
   /** Batch render many SVGs to premultiplied RGBA_8888 bytes. */
@@ -372,12 +363,7 @@ export class ThorVG {
       stopColors,
       gradGeom,
     );
-    const out: (image.PixelMap | undefined)[] = [];
-    for (let i = 0; i < buffers.length; i++) {
-      const buf = buffers[i];
-      out.push(buf ? ThorVG.pixelMapFromRgba(buf, widthPx, heightPx) : undefined);
-    }
-    return out;
+    return ThorVG.pixelMapsFromRgbaBuffers(buffers, widthPx, heightPx);
   }
 
   static async renderSvgBatchMaskGradientRgba(
@@ -422,11 +408,26 @@ export class ThorVG {
     return out;
   }
 
-  static pixelMapFromRgba(
+  static async pixelMapsFromRgbaBuffers(
+    buffers: (ArrayBuffer | null | undefined)[],
+    widthPx: number,
+    heightPx: number,
+  ): Promise<(image.PixelMap | undefined)[]> {
+    const jobs: Promise<image.PixelMap | undefined>[] = [];
+    for (let i = 0; i < buffers.length; i++) {
+      const buf = buffers[i];
+      jobs.push((buf === null || buf === undefined || buf.byteLength === 0)
+        ? Promise.resolve(undefined)
+        : ThorVG.pixelMapFromRgba(buf, widthPx, heightPx));
+    }
+    return Promise.all(jobs);
+  }
+
+  static async pixelMapFromRgba(
     rgbaBuffer: ArrayBuffer,
     widthPx: number,
     heightPx: number,
-  ): image.PixelMap | undefined {
+  ): Promise<image.PixelMap | undefined> {
     const opts: image.InitializationOptions = {
       size: { width: widthPx, height: heightPx },
       srcPixelFormat: image.PixelMapFormat.RGBA_8888,
@@ -435,7 +436,7 @@ export class ThorVG {
       alphaType: image.AlphaType.PREMUL,
     };
     try {
-      return image.createPixelMapSync(rgbaBuffer, opts);
+      return await image.createPixelMap(rgbaBuffer, opts);
     } catch (_e) {
       try {
         const fallback: image.InitializationOptions = {
@@ -444,7 +445,7 @@ export class ThorVG {
           editable: false,
           alphaType: image.AlphaType.PREMUL,
         };
-        return image.createPixelMapSync(rgbaBuffer, fallback);
+        return await image.createPixelMap(rgbaBuffer, fallback);
       } catch (_e2) {
         return undefined;
       }

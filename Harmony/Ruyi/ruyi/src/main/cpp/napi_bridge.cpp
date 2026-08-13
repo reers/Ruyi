@@ -46,6 +46,13 @@ struct ResolvedStop {
     uint8_t b = 0;
 };
 
+struct GradientSample {
+    double a = 0.0;
+    double r = 0.0;
+    double g = 0.0;
+    double b = 0.0;
+};
+
 uint32_t ReadArkTsPackedColor(const void *data, size_t index) {
     auto *bytes = static_cast<const uint8_t *>(data) + index * sizeof(uint32_t);
     return static_cast<uint32_t>(bytes[0]) |
@@ -337,13 +344,7 @@ std::vector<ResolvedStop> ResolveStops(const RenderArgs &args) {
     return stops;
 }
 
-void WritePremulStopColor(
-    std::vector<uint8_t> &out,
-    size_t offset,
-    const std::vector<ResolvedStop> &stops,
-    double t,
-    uint8_t maskAlpha
-) {
+GradientSample SampleGradient(const std::vector<ResolvedStop> &stops, double t) {
     const double clamped = Clamp01(t);
     const ResolvedStop *left = &stops.front();
     const ResolvedStop *right = &stops.back();
@@ -363,15 +364,53 @@ void WritePremulStopColor(
 
     const double span = right->offset - left->offset;
     const double local = std::abs(span) <= 0.000001 ? 0.0 : (clamped - left->offset) / span;
-    const double stopA = left->a + (right->a - left->a) * local;
-    const uint8_t alpha = RoundByte(stopA * maskAlpha / 255.0);
+    GradientSample sample;
+    sample.a = left->a + (right->a - left->a) * local;
+    sample.r = left->r + (right->r - left->r) * local;
+    sample.g = left->g + (right->g - left->g) * local;
+    sample.b = left->b + (right->b - left->b) * local;
+    return sample;
+}
+
+void WritePremulSampleColor(
+    std::vector<uint8_t> &out,
+    size_t offset,
+    const GradientSample &sample,
+    uint8_t maskAlpha
+) {
+    const uint8_t alpha = RoundByte(sample.a * maskAlpha / 255.0);
     out[offset + 3] = alpha;
     if (alpha == 0) {
         return;
     }
-    out[offset] = RoundByte((left->r + (right->r - left->r) * local) * alpha / 255.0);
-    out[offset + 1] = RoundByte((left->g + (right->g - left->g) * local) * alpha / 255.0);
-    out[offset + 2] = RoundByte((left->b + (right->b - left->b) * local) * alpha / 255.0);
+    out[offset] = RoundByte(sample.r * alpha / 255.0);
+    out[offset + 1] = RoundByte(sample.g * alpha / 255.0);
+    out[offset + 2] = RoundByte(sample.b * alpha / 255.0);
+}
+
+std::vector<GradientSample> BuildGradientSamples(
+    const RenderArgs &args,
+    const std::vector<ResolvedStop> &stops
+) {
+    const size_t pixelCount = static_cast<size_t>(args.widthPx) * static_cast<size_t>(args.heightPx);
+    if (pixelCount == 0 || stops.size() < 2) {
+        return {};
+    }
+
+    std::vector<GradientSample> samples(pixelCount);
+    for (int32_t y = 0; y < args.heightPx; ++y) {
+        const double py = y + 0.5;
+        const size_t row = static_cast<size_t>(y) * static_cast<size_t>(args.widthPx);
+        for (int32_t x = 0; x < args.widthPx; ++x) {
+            const size_t pixelIndex = row + static_cast<size_t>(x);
+            const double px = x + 0.5;
+            const double t = args.gradientKind == 2
+                ? RadialParameter(px, py, args.widthPx, args.heightPx, args)
+                : LinearParameter(px, py, args.widthPx, args.heightPx, args);
+            samples[pixelIndex] = SampleGradient(stops, t);
+        }
+    }
+    return samples;
 }
 
 std::vector<uint8_t> ComposeGradientMaskRgba(const std::vector<uint8_t> &mask, const RenderArgs &args) {
@@ -391,10 +430,13 @@ std::vector<uint8_t> ComposeGradientMaskRgba(const std::vector<uint8_t> &mask, c
     if (stops.size() < 2) {
         return {};
     }
+    const std::vector<GradientSample> samples = BuildGradientSamples(args, stops);
+    if (samples.size() < pixelCount) {
+        return {};
+    }
 
     std::vector<uint8_t> out(pixelCount * 4, 0);
     for (int32_t y = 0; y < args.heightPx; ++y) {
-        const double py = y + 0.5;
         const size_t row = static_cast<size_t>(y) * static_cast<size_t>(args.widthPx);
         for (int32_t x = 0; x < args.widthPx; ++x) {
             const size_t pixelIndex = row + static_cast<size_t>(x);
@@ -403,17 +445,17 @@ std::vector<uint8_t> ComposeGradientMaskRgba(const std::vector<uint8_t> &mask, c
             if (maskAlpha == 0) {
                 continue;
             }
-            const double px = x + 0.5;
-            const double t = args.gradientKind == 2
-                ? RadialParameter(px, py, args.widthPx, args.heightPx, args)
-                : LinearParameter(px, py, args.widthPx, args.heightPx, args);
-            WritePremulStopColor(out, offset, stops, t, maskAlpha);
+            WritePremulSampleColor(out, offset, samples[pixelIndex], maskAlpha);
         }
     }
     return out;
 }
 
-std::vector<uint8_t> ComposeGradientMaskPixels(const std::vector<uint32_t> &mask, const RenderArgs &args) {
+std::vector<uint8_t> ComposeGradientMaskPixels(
+    const std::vector<uint32_t> &mask,
+    const RenderArgs &args,
+    const std::vector<GradientSample> &samples
+) {
     if ((args.gradientKind != 1 && args.gradientKind != 2) ||
         args.stops.size() < 2 ||
         args.widthPx <= 0 ||
@@ -421,6 +463,28 @@ std::vector<uint8_t> ComposeGradientMaskPixels(const std::vector<uint32_t> &mask
         return {};
     }
 
+    const size_t pixelCount = static_cast<size_t>(args.widthPx) * static_cast<size_t>(args.heightPx);
+    if (pixelCount > (SIZE_MAX / 4) || mask.size() < pixelCount || samples.size() < pixelCount) {
+        return {};
+    }
+
+    std::vector<uint8_t> out(pixelCount * 4, 0);
+    for (int32_t y = 0; y < args.heightPx; ++y) {
+        const size_t row = static_cast<size_t>(y) * static_cast<size_t>(args.widthPx);
+        for (int32_t x = 0; x < args.widthPx; ++x) {
+            const size_t pixelIndex = row + static_cast<size_t>(x);
+            const uint8_t maskAlpha = static_cast<uint8_t>((mask[pixelIndex] >> 24) & 0xff);
+            if (maskAlpha == 0) {
+                continue;
+            }
+            const size_t offset = pixelIndex * 4;
+            WritePremulSampleColor(out, offset, samples[pixelIndex], maskAlpha);
+        }
+    }
+    return out;
+}
+
+std::vector<uint8_t> ComposeGradientMaskPixels(const std::vector<uint32_t> &mask, const RenderArgs &args) {
     const size_t pixelCount = static_cast<size_t>(args.widthPx) * static_cast<size_t>(args.heightPx);
     if (pixelCount > (SIZE_MAX / 4) || mask.size() < pixelCount) {
         return {};
@@ -430,26 +494,7 @@ std::vector<uint8_t> ComposeGradientMaskPixels(const std::vector<uint32_t> &mask
     if (stops.size() < 2) {
         return {};
     }
-
-    std::vector<uint8_t> out(pixelCount * 4, 0);
-    for (int32_t y = 0; y < args.heightPx; ++y) {
-        const double py = y + 0.5;
-        const size_t row = static_cast<size_t>(y) * static_cast<size_t>(args.widthPx);
-        for (int32_t x = 0; x < args.widthPx; ++x) {
-            const size_t pixelIndex = row + static_cast<size_t>(x);
-            const uint8_t maskAlpha = static_cast<uint8_t>((mask[pixelIndex] >> 24) & 0xff);
-            if (maskAlpha == 0) {
-                continue;
-            }
-            const size_t offset = pixelIndex * 4;
-            const double px = x + 0.5;
-            const double t = args.gradientKind == 2
-                ? RadialParameter(px, py, args.widthPx, args.heightPx, args)
-                : LinearParameter(px, py, args.widthPx, args.heightPx, args);
-            WritePremulStopColor(out, offset, stops, t, maskAlpha);
-        }
-    }
-    return out;
+    return ComposeGradientMaskPixels(mask, args, BuildGradientSamples(args, stops));
 }
 
 napi_value BufferFromPixels(napi_env env, const std::vector<uint32_t> &pixels) {
@@ -480,21 +525,33 @@ napi_value BufferFromPixels(napi_env env, const std::vector<uint32_t> &pixels) {
     return buffer;
 }
 
-napi_value BufferFromRgba(napi_env env, const std::vector<uint8_t> &rgba) {
+void FinalizeExternalVector(napi_env, void *, void *hint) {
+    delete static_cast<std::vector<uint8_t> *>(hint);
+}
+
+napi_value BufferFromRgba(napi_env env, std::vector<uint8_t> &&rgba) {
     if (rgba.empty()) {
         napi_value nullVal;
         napi_get_null(env, &nullVal);
         return nullVal;
     }
-    void *outData = nullptr;
+
+    auto *owned = new std::vector<uint8_t>(std::move(rgba));
     napi_value buffer;
-    napi_create_arraybuffer(env, rgba.size(), &outData, &buffer);
-    if (outData == nullptr) {
+    const napi_status status = napi_create_external_arraybuffer(
+        env,
+        owned->data(),
+        owned->size(),
+        FinalizeExternalVector,
+        owned,
+        &buffer
+    );
+    if (status != napi_ok) {
+        delete owned;
         napi_value nullVal;
         napi_get_null(env, &nullVal);
         return nullVal;
     }
-    std::memcpy(outData, rgba.data(), rgba.size());
     return buffer;
 }
 
@@ -518,6 +575,9 @@ void ExecuteComposeGradientMasks(napi_env, void *data) {
 
 void ExecuteRenderMaskGradient(napi_env, void *data) {
     auto *ctx = static_cast<AsyncCtx *>(data);
+    const std::vector<ResolvedStop> stops = ResolveStops(ctx->args);
+    const std::vector<GradientSample> samples = BuildGradientSamples(ctx->args, stops);
+
     RenderArgs maskArgs;
     maskArgs.widthPx = ctx->args.widthPx;
     maskArgs.heightPx = ctx->args.heightPx;
@@ -531,7 +591,7 @@ void ExecuteRenderMaskGradient(napi_env, void *data) {
     ctx->rgbaResults.reserve(ctx->args.svgs.size());
     for (const auto &svg : ctx->args.svgs) {
         const std::vector<uint32_t> mask = RenderOne(maskArgs, svg);
-        ctx->rgbaResults.push_back(ComposeGradientMaskPixels(mask, ctx->args));
+        ctx->rgbaResults.push_back(ComposeGradientMaskPixels(mask, ctx->args, samples));
     }
 }
 
@@ -569,7 +629,7 @@ void CompleteSingleRgba(napi_env env, napi_status status, void *data) {
         napi_get_null(env, &nullVal);
         napi_resolve_deferred(env, ctx->deferred, nullVal);
     } else {
-        napi_resolve_deferred(env, ctx->deferred, BufferFromRgba(env, ctx->rgbaResults[0]));
+        napi_resolve_deferred(env, ctx->deferred, BufferFromRgba(env, std::move(ctx->rgbaResults[0])));
     }
     napi_delete_async_work(env, ctx->work);
     delete ctx;
@@ -581,7 +641,7 @@ void CompleteBatchRgba(napi_env env, napi_status status, void *data) {
     napi_create_array_with_length(env, ctx->rgbaResults.size(), &arr);
     if (status == napi_ok && ctx->ok) {
         for (size_t i = 0; i < ctx->rgbaResults.size(); ++i) {
-            napi_set_element(env, arr, i, BufferFromRgba(env, ctx->rgbaResults[i]));
+            napi_set_element(env, arr, i, BufferFromRgba(env, std::move(ctx->rgbaResults[i])));
         }
     }
     napi_resolve_deferred(env, ctx->deferred, arr);
