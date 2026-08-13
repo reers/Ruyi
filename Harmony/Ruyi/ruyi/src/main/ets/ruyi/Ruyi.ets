@@ -65,10 +65,10 @@ export class GradientTint {
   }
 }
 
-/** Rendering options for SVG → PixelMap (aligned with Apple / Android Ruyi). */
-export class RuyiOptions {
-  /** Output size in density-independent pixels (logical vp). */
-  sizeVp: number;
+/** Object-style rendering options for business code. */
+export interface RuyiOptionsInit {
+  /** Output size in vp (Harmony logical pixels). */
+  size: number;
   /** Optional solid tint as packed `0xAARRGGBB`; undefined keeps SVG colors. */
   color?: number;
   /** Optional gradient tint; takes precedence over color. */
@@ -76,8 +76,29 @@ export class RuyiOptions {
   /** Optional stroke width in points (see absoluteStrokeWidth). */
   strokeWidth?: number;
   /**
-   * When true, strokeWidth is constant in points regardless of sizeVp.
-   * When false, stroke scales with sizeVp / referenceSize (Lucide-style). Default.
+   * When true, strokeWidth is constant in points regardless of size.
+   * When false, stroke scales with size / referenceSize (Lucide-style). Default.
+   */
+  absoluteStrokeWidth?: boolean;
+  /** Design-size baseline used when absoluteStrokeWidth is false. Default 24. */
+  referenceSize?: number;
+  /** Screen density. Use display.densityDPI / 160 for device pixels. Default 1. */
+  density?: number;
+}
+
+/** Rendering options for SVG → PixelMap (aligned with Apple / Android Ruyi). */
+export class RuyiOptions {
+  /** Output size in vp (Harmony logical pixels). */
+  size: number;
+  /** Optional solid tint as packed `0xAARRGGBB`; undefined keeps SVG colors. */
+  color?: number;
+  /** Optional gradient tint; takes precedence over color. */
+  gradient?: GradientTint;
+  /** Optional stroke width in points (see absoluteStrokeWidth). */
+  strokeWidth?: number;
+  /**
+   * When true, strokeWidth is constant in points regardless of size.
+   * When false, stroke scales with size / referenceSize (Lucide-style). Default.
    */
   absoluteStrokeWidth: boolean;
   /** Design-size baseline used when absoluteStrokeWidth is false. Default 24. */
@@ -85,22 +106,18 @@ export class RuyiOptions {
   /** Screen density. Use display.densityDPI / 160 for device pixels. */
   density: number;
 
-  constructor(
-    sizeVp: number,
-    color?: number,
-    strokeWidth?: number,
-    absoluteStrokeWidth: boolean = false,
-    referenceSize: number = 24,
-    density: number = 1,
-    gradient?: GradientTint,
-  ) {
-    this.sizeVp = sizeVp;
-    this.color = color;
-    this.strokeWidth = strokeWidth;
-    this.absoluteStrokeWidth = absoluteStrokeWidth;
-    this.referenceSize = referenceSize;
-    this.density = density;
-    this.gradient = gradient;
+  constructor(options: RuyiOptionsInit) {
+    this.size = options.size;
+    this.color = options.color;
+    this.strokeWidth = options.strokeWidth;
+    this.absoluteStrokeWidth = options.absoluteStrokeWidth ?? false;
+    this.referenceSize = options.referenceSize ?? 24;
+    this.density = options.density ?? 1;
+    this.gradient = options.gradient;
+  }
+
+  static from(options: RuyiOptionsInit): RuyiOptions {
+    return new RuyiOptions(options);
   }
 }
 
@@ -119,12 +136,13 @@ export class Ruyi {
     return ThorVG.version();
   }
 
-  static async image(svg: string | ArrayBuffer, options: RuyiOptions): Promise<image.PixelMap | undefined> {
-    if (options.sizeVp <= 0 || options.density <= 0) {
+  static async image(svg: string | ArrayBuffer, options: RuyiOptionsInit): Promise<image.PixelMap | undefined> {
+    const opts = RuyiOptions.from(options);
+    if (opts.size <= 0 || opts.density <= 0) {
       return undefined;
     }
-    const sizePx = Math.max(1, Math.round(options.sizeVp * options.density));
-    const packed = Ruyi.packGradient(options.gradient);
+    const sizePx = Math.max(1, Math.round(opts.size * opts.density));
+    const packed = Ruyi.packGradient(opts.gradient);
     if (packed) {
       // Harmony intentionally uses a mask-composition path for gradient tint.
       // Android and Apple currently inject gradients into ThorVG fill/stroke
@@ -138,10 +156,10 @@ export class Ruyi {
         sizePx,
         sizePx,
         WHITE_ARGB,
-        options.strokeWidth,
-        options.absoluteStrokeWidth,
-        options.sizeVp,
-        options.referenceSize,
+        opts.strokeWidth,
+        opts.absoluteStrokeWidth,
+        opts.size,
+        opts.referenceSize,
         packed.kind,
         packed.offsets,
         packed.colors,
@@ -153,24 +171,25 @@ export class Ruyi {
       svg,
       sizePx,
       sizePx,
-      options.color ?? 0,
-      options.strokeWidth,
-      options.absoluteStrokeWidth,
-      options.sizeVp,
-      options.referenceSize,
+      opts.color ?? 0,
+      opts.strokeWidth,
+      opts.absoluteStrokeWidth,
+      opts.size,
+      opts.referenceSize,
     );
   }
 
   /** Batch helper for demos / icon grids (one native worker job). */
   static async imageBatch(
     svgs: string[],
-    options: RuyiOptions,
+    options: RuyiOptionsInit,
   ): Promise<(image.PixelMap | undefined)[]> {
-    if (svgs.length === 0 || options.sizeVp <= 0 || options.density <= 0) {
+    const opts = RuyiOptions.from(options);
+    if (svgs.length === 0 || opts.size <= 0 || opts.density <= 0) {
       return [];
     }
-    const sizePx = Math.max(1, Math.round(options.sizeVp * options.density));
-    const packed = Ruyi.packGradient(options.gradient);
+    const sizePx = Math.max(1, Math.round(opts.size * opts.density));
+    const packed = Ruyi.packGradient(opts.gradient);
     if (packed) {
       // See image(...): batch gradient rendering follows the same Harmony-only
       // mask-composition path, but keeps the whole grid in one native worker job.
@@ -179,10 +198,10 @@ export class Ruyi {
         sizePx,
         sizePx,
         WHITE_ARGB,
-        options.strokeWidth,
-        options.absoluteStrokeWidth,
-        options.sizeVp,
-        options.referenceSize,
+        opts.strokeWidth,
+        opts.absoluteStrokeWidth,
+        opts.size,
+        opts.referenceSize,
         packed.kind,
         packed.offsets,
         packed.colors,
@@ -194,11 +213,11 @@ export class Ruyi {
       svgs,
       sizePx,
       sizePx,
-      options.color ?? 0,
-      options.strokeWidth,
-      options.absoluteStrokeWidth,
-      options.sizeVp,
-      options.referenceSize,
+      opts.color ?? 0,
+      opts.strokeWidth,
+      opts.absoluteStrokeWidth,
+      opts.size,
+      opts.referenceSize,
     );
   }
 

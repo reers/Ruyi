@@ -1,4 +1,4 @@
-import { Ruyi, RuyiOptions, GradientStop, GradientTint } from '@reers/ruyi';
+import { Ruyi, GradientStop, GradientTint } from '@reers/ruyi';
 import { image } from '@kit.ImageKit';
 import { display } from '@kit.ArkUI';
 import { common } from '@kit.AbilityKit';
@@ -230,8 +230,10 @@ struct OriginalWorkspace {
     if (this.icons.length === 0) {
       return;
     }
-    const options = new RuyiOptions(Math.round(this.sizeVp), undefined, undefined, false, 24, this.density);
-    const maps = await Ruyi.imageBatch(this.icons.map((i: IconItem) => i.svg), options);
+    const maps = await Ruyi.imageBatch(this.icons.map((i: IconItem) => i.svg), {
+      size: Math.round(this.sizeVp),
+      density: this.density,
+    });
     if (token !== this.token) {
       flushRelease(maps);
       return;
@@ -402,15 +404,14 @@ struct SolidWorkspace {
     if (this.icons.length === 0) {
       return;
     }
-    const options = new RuyiOptions(
-      Math.round(this.sizeVp),
-      hsvToArgb(this.hue, 0.75, 1),
-      this.strokePt,
-      this.absoluteStroke,
-      24,
-      this.density,
-    );
-    const maps = await Ruyi.imageBatch(this.icons.map((i: IconItem) => i.svg), options);
+    const maps = await Ruyi.imageBatch(this.icons.map((i: IconItem) => i.svg), {
+      size: Math.round(this.sizeVp),
+      color: hsvToArgb(this.hue, 0.75, 1),
+      strokeWidth: this.strokePt,
+      absoluteStrokeWidth: this.absoluteStroke,
+      referenceSize: 24,
+      density: this.density,
+    });
     if (token !== this.token) {
       flushRelease(maps);
       return;
@@ -671,16 +672,14 @@ struct GradientWorkspace {
     if (this.icons.length === 0 || this.showEditor) {
       return;
     }
-    const options = new RuyiOptions(
-      Math.round(this.sizeVp),
-      undefined,
-      this.strokePt,
-      this.absoluteStroke,
-      24,
-      this.density,
-      this.committedTint(),
-    );
-    const maps = await Ruyi.imageBatch(this.icons.map((i: IconItem) => i.svg), options);
+    const maps = await Ruyi.imageBatch(this.icons.map((i: IconItem) => i.svg), {
+      size: Math.round(this.sizeVp),
+      strokeWidth: this.strokePt,
+      absoluteStrokeWidth: this.absoluteStroke,
+      referenceSize: 24,
+      density: this.density,
+      gradient: this.committedTint(),
+    });
     if (token !== this.token) {
       flushRelease(maps);
       return;
