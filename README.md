@@ -13,6 +13,9 @@ Scale and tint your own SVGs — **no built-in icon set**.
 - Gradient tint is also available through `GradientTint` for icon-wide linear or radial effects.
 - Use the same rendering model across Apple, Android, and HarmonyOS, backed by ThorVG.
 
+https://github.com/user-attachments/assets/c357b158-9a45-4dce-9c74-7ae0864580d3
+
+
 ## Repository layout
 
 Multi-platform monorepo:
