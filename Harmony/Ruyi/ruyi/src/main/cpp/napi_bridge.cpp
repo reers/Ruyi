@@ -786,6 +786,13 @@ napi_value ComposeGradientMasks(napi_env env, napi_callback_info info) {
  * Strictly equivalent to ArkTS:
  *   renderSvgRgba(svg, maskArgb) -> composeGradientMask(maskRgba, gradient)
  * but both phases stay inside one native worker job.
+ *
+ * This is intentionally not the same implementation strategy as Android/iOS.
+ * Those ports can pass gradients into ThorVG shape paints and return the final
+ * image. Harmony previously needed a post-raster mask tint to match Ruyi's
+ * icon-wide gradient semantics, and doing that in ArkTS made large icons pay for
+ * both per-pixel JS work and large NAPI buffer round-trips. This worker preserves
+ * the verified mask algorithm while keeping the hot pixel path in C++.
  */
 napi_value RenderSvgMaskGradient(napi_env env, napi_callback_info info) {
     size_t argc = 12;

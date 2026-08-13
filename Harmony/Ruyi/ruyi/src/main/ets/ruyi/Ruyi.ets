@@ -126,6 +126,13 @@ export class Ruyi {
     const sizePx = Math.max(1, Math.round(options.sizeVp * options.density));
     const packed = Ruyi.packGradient(options.gradient);
     if (packed) {
+      // Harmony intentionally uses a mask-composition path for gradient tint.
+      // Android and Apple currently inject gradients into ThorVG fill/stroke
+      // paints directly, but that paints each shape independently. The Ruyi
+      // public API expects one icon-wide gradient over the final alpha mask, so
+      // we render a white mask first and then sample the gradient once in native
+      // code. Keeping both phases in C++ also avoids large ArrayBuffer hops and
+      // ArkTS per-pixel work during live size/stroke slider updates.
       const rgba = await ThorVG.renderSvgMaskGradientRgba(
         svg,
         sizePx,
@@ -165,6 +172,8 @@ export class Ruyi {
     const sizePx = Math.max(1, Math.round(options.sizeVp * options.density));
     const packed = Ruyi.packGradient(options.gradient);
     if (packed) {
+      // See image(...): batch gradient rendering follows the same Harmony-only
+      // mask-composition path, but keeps the whole grid in one native worker job.
       const buffers = await ThorVG.renderSvgBatchMaskGradientRgba(
         svgs,
         sizePx,

@@ -263,6 +263,13 @@ export class ThorVG {
    * Render SVG as a white alpha mask, then apply an icon-wide gradient in the
    * native worker. This keeps the correct mask-based tint model while avoiding
    * ArkTS per-pixel work during live slider updates.
+   *
+   * Unlike Android/iOS, this does not ask ThorVG to paint gradient fills and
+   * strokes directly. That direct path is fast, but it follows ThorVG's shape
+   * paint semantics; Harmony needs the already-rasterized icon alpha as a single
+   * mask so the gradient is sampled consistently across fills, strokes, and
+   * multi-path icons. The native worker keeps the large mask buffer on the C++
+   * side until the final RGBA bytes are ready for ImageKit.
    */
   static async renderSvgMaskGradient(
     svg: string | ArrayBuffer,
