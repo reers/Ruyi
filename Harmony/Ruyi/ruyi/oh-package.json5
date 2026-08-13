@@ -1,6 +1,6 @@
 {
   "name": "@reers/ruyi",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Cross-platform SVG load and render runtime for HarmonyOS (ArkTS + NAPI over ThorVG C API).",
   "main": "Index.ets",
   "author": {

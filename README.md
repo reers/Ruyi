@@ -184,7 +184,7 @@ Or in `oh-package.json5`:
 
 ```json5
 "dependencies": {
-  "@reers/ruyi": "1.0.0"
+  "@reers/ruyi": "1.0.2"
 }
 ```
 
