@@ -2,7 +2,7 @@
 
 HarmonyOS SVG **load & render** runtime (ArkTS API + NAPI over ThorVG C API).
 
-Ships no built-in icons — pass your own SVG strings / rawfile assets.  
+Ships no built-in icons — pass your own SVG strings or rawfile bytes.
 Scale and tint via object-style options (aligned with Apple / Android Ruyi).
 
 Depends on [`@vnixx/thorvg`](https://ohpm.openharmony.cn/#/cn/detail/@vnixx/thorvg) for the trimmed ThorVG native library.
@@ -39,7 +39,7 @@ const pixelMap = await Ruyi.image(svgString, {
   ], 90),
 });
 
-const maps = await Ruyi.imageBatch(svgStrings, {
+const maps = await Ruyi.imageBatch(svgSources, {
   size: 24,
   color: 0xFFFF0000,  // ARGB
   strokeWidth: 2,
@@ -48,6 +48,9 @@ const maps = await Ruyi.imageBatch(svgStrings, {
   density,
 });
 ```
+
+`svgSources` can be SVG XML strings or `ArrayBuffer`s read from rawfile, cache,
+or network responses.
 
 Engine lazy-inits on first render (no public `engineInit` / `engineTerm`).
 

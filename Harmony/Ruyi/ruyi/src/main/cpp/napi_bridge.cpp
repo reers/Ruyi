@@ -711,7 +711,7 @@ napi_value RenderSvg(napi_env env, napi_callback_info info) {
 }
 
 /**
- * renderSvgBatch(svgs: string[], widthPx, heightPx, ...) → Promise<ArrayBuffer|null[]>
+ * renderSvgBatch(svgs: (string|ArrayBuffer)[], widthPx, heightPx, ...) → Promise<ArrayBuffer|null[]>
  */
 napi_value RenderSvgBatch(napi_env env, napi_callback_info info) {
     size_t argc = 12;
@@ -886,7 +886,7 @@ napi_value RenderSvgMaskGradient(napi_env env, napi_callback_info info) {
 }
 
 /**
- * Batch renderSvgMaskGradient — one native worker job for many SVGs.
+ * Batch renderSvgMaskGradient — one native worker job for many SVG sources.
  */
 napi_value RenderSvgBatchMaskGradient(napi_env env, napi_callback_info info) {
     size_t argc = 12;

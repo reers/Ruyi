@@ -200,12 +200,15 @@ const pixelMap = await Ruyi.image(svgString, {
   density,
 });
 
-const maps = await Ruyi.imageBatch(svgStrings, {
+const maps = await Ruyi.imageBatch(svgSources, {
   size: 24,
   color: 0xFFFF0000,  // ARGB
   density,
 });
 ```
+
+`svgSources` can be SVG XML strings or `ArrayBuffer`s read from rawfile, cache,
+or network responses.
 
 Only `size` is required in Harmony options. Other rendering options can be
 omitted; pass the current display density when you want vp output to resolve to

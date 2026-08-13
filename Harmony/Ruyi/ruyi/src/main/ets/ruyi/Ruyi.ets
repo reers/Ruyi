@@ -3,6 +3,8 @@ import { ThorVG } from './ThorVG';
 
 const WHITE_ARGB: number = 0xFFFFFFFF;
 
+export type RuyiSvgSource = string | ArrayBuffer;
+
 /** A color stop along a gradient. offset is in 0…1. color is 0xAARRGGBB. */
 export class GradientStop {
   offset: number;
@@ -136,7 +138,7 @@ export class Ruyi {
     return ThorVG.version();
   }
 
-  static async image(svg: string | ArrayBuffer, options: RuyiOptionsInit): Promise<image.PixelMap | undefined> {
+  static async image(svg: RuyiSvgSource, options: RuyiOptionsInit): Promise<image.PixelMap | undefined> {
     const opts = RuyiOptions.from(options);
     if (opts.size <= 0 || opts.density <= 0) {
       return undefined;
@@ -181,7 +183,7 @@ export class Ruyi {
 
   /** Batch helper for demos / icon grids (one native worker job). */
   static async imageBatch(
-    svgs: string[],
+    svgs: RuyiSvgSource[],
     options: RuyiOptionsInit,
   ): Promise<(image.PixelMap | undefined)[]> {
     const opts = RuyiOptions.from(options);

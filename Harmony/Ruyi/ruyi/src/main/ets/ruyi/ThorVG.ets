@@ -97,9 +97,9 @@ export class ThorVG {
     return nativeBuffer;
   }
 
-  /** Batch render many SVGs with the same style (one native worker job). */
+  /** Batch render many SVG sources with the same style (one native worker job). */
   static async renderSvgBatch(
-    svgs: string[],
+    svgs: (string | ArrayBuffer)[],
     widthPx: number,
     heightPx: number,
     argb: number = 0,
@@ -136,7 +136,7 @@ export class ThorVG {
 
   /** Batch render many SVGs to premultiplied RGBA_8888 bytes. */
   static async renderSvgBatchRgba(
-    svgs: string[],
+    svgs: (string | ArrayBuffer)[],
     widthPx: number,
     heightPx: number,
     argb: number = 0,
@@ -336,7 +336,7 @@ export class ThorVG {
   }
 
   static async renderSvgBatchMaskGradient(
-    svgs: string[],
+    svgs: (string | ArrayBuffer)[],
     widthPx: number,
     heightPx: number,
     maskArgb: number = 0xFFFFFFFF,
@@ -367,7 +367,7 @@ export class ThorVG {
   }
 
   static async renderSvgBatchMaskGradientRgba(
-    svgs: string[],
+    svgs: (string | ArrayBuffer)[],
     widthPx: number,
     heightPx: number,
     maskArgb: number = 0xFFFFFFFF,

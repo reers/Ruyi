@@ -2,6 +2,8 @@ export const engineInit: (threads?: number) => number;
 export const engineTerm: () => number;
 export const version: () => string;
 
+export type SvgSource = string | ArrayBuffer;
+
 /**
  * Render SVG → Promise of ArrayBuffer (premul RGBA8888 bytes, swizzled from
  * ThorVG 0xAARRGGBB). ArkTS wraps as PixelMap RGBA_8888 + PREMUL.
@@ -11,7 +13,7 @@ export const version: () => string;
  * stopOffsets / stopColors / gradGeom: TypedArrays when gradientKind != 0
  */
 export const renderSvg: (
-  svg: string | ArrayBuffer,
+  svg: SvgSource,
   widthPx: number,
   heightPx: number,
   argb?: number,
@@ -29,7 +31,7 @@ export const renderSvg: (
  * Batch render — one worker job for many SVGs (same style params).
  */
 export const renderSvgBatch: (
-  svgs: string[],
+  svgs: SvgSource[],
   widthPx: number,
   heightPx: number,
   argb?: number,
@@ -85,7 +87,7 @@ export const composeGradientMasks: (
  * code. Output is premul RGBA_8888 bytes ready for ImageKit PixelMap.
  */
 export const renderSvgMaskGradient: (
-  svg: string | ArrayBuffer,
+  svg: SvgSource,
   widthPx: number,
   heightPx: number,
   maskArgb: number,
@@ -103,7 +105,7 @@ export const renderSvgMaskGradient: (
  * Batch version of renderSvgMaskGradient — one worker job for many SVGs.
  */
 export const renderSvgBatchMaskGradient: (
-  svgs: string[],
+  svgs: SvgSource[],
   widthPx: number,
   heightPx: number,
   maskArgb: number,
