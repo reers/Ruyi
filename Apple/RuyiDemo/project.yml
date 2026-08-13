@@ -20,6 +20,7 @@ targets:
     type: application
     platform: macOS
     sources:
+      - path: Sources/RuyiDemoShared
       - path: Sources/RuyiDemo-macOS
         excludes:
           - Resources
@@ -51,6 +52,7 @@ targets:
     type: application
     platform: iOS
     sources:
+      - path: Sources/RuyiDemoShared
       - path: Sources/RuyiDemo-iOS
       - path: Sources/RuyiDemo-macOS/IconCatalog.swift
       - path: Sources/RuyiDemo-macOS/Resources/Icons
@@ -81,6 +83,7 @@ targets:
     type: application
     platform: tvOS
     sources:
+      - path: Sources/RuyiDemoShared
       - path: Sources/RuyiDemo-tvOS
       - path: Sources/RuyiDemo-macOS/IconCatalog.swift
       - path: Sources/RuyiDemo-macOS/Resources/Icons
@@ -110,6 +113,7 @@ targets:
     type: application
     platform: watchOS
     sources:
+      - path: Sources/RuyiDemoShared
       - path: Sources/RuyiDemo-watchOS
       - path: Sources/RuyiDemo-macOS/IconCatalog.swift
       - path: Sources/RuyiDemo-macOS/Resources/Icons
@@ -140,6 +144,7 @@ targets:
     type: application
     platform: visionOS
     sources:
+      - path: Sources/RuyiDemoShared
       - path: Sources/RuyiDemo-visionOS
       - path: Sources/RuyiDemo-macOS/IconCatalog.swift
       - path: Sources/RuyiDemo-macOS/Resources/Icons

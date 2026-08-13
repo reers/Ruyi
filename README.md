@@ -5,9 +5,17 @@ Scale and tint your own SVGs — **no built-in icon set**.
 
 > 如意金箍棒：能大能小 — vector graphics that scale freely.
 
+## What it does
+
+- Render SVG source strings, files, or bundled resources into platform-native images.
+- Keep original SVG colors or apply a solid tint with the common `size` / `color` / `strokeWidth` API.
+- Override stroke width with either fixed logical units or Lucide-style scaling from a reference size.
+- Gradient tint is also available through `GradientTint` for icon-wide linear or radial effects.
+- Use the same rendering model across Apple, Android, and HarmonyOS, backed by ThorVG.
+
 ## Repository layout
 
-MMKV-style multi-platform monorepo:
+Multi-platform monorepo:
 
 ```text
 Package.swift              # SPM entry (path → Apple/Sources/Ruyi)
@@ -25,9 +33,10 @@ Harmony/
     ruyidemo/              # Demo HAP
 ```
 
----
+## Platforms
 
-## Apple (SPM)
+<details>
+<summary><strong>Apple (SPM)</strong></summary>
 
 ### Platforms
 
@@ -52,13 +61,14 @@ dependencies: [
 ```swift
 import Ruyi
 
-let options = Ruyi.Options(
-    size: CGSize(width: 24, height: 24),
-    color: .systemRed,
-    strokeWidth: 2
+let image = Ruyi.image(
+    data: svgData,
+    options: .init(
+        size: CGSize(width: 40, height: 40),
+        color: .systemRed,
+        strokeWidth: 2
+    )
 )
-
-let image = Ruyi.image(data: svgData, options: options)
 ```
 
 Also:
@@ -98,9 +108,10 @@ macOS CLI fallback: `cd Apple/RuyiDemo && ./run.sh`
 
 [ThorVG](https://github.com/thorvg/thorvg) via SPM binary package [`vnixx/thorvg.ruyi`](https://github.com/vnixx/thorvg.ruyi) (CPU raster + SVG + C API).
 
----
+</details>
 
-## Android (Maven)
+<details>
+<summary><strong>Android (Maven)</strong></summary>
 
 ### Platforms
 
@@ -120,14 +131,16 @@ dependencies {
 ```kotlin
 import io.github.reers.ruyi.Ruyi
 
-val options = Ruyi.Options(
-    sizeDp = 24f,
-    color = 0xFFFF0000.toInt(),
-    strokeWidth = 2f,
-    density = resources.displayMetrics.density,
+val bitmap = Ruyi.image(
+    svgString,
+    Ruyi.Options(
+        sizeDp = 40f,
+        color = 0xFFFF0000.toInt(),
+        strokeWidth = 2f,
+        density = resources.displayMetrics.density,
+    ),
 )
 
-val bitmap = Ruyi.image(svgString, options)
 // or: Ruyi.image(context, "heart", options)
 ```
 
@@ -148,9 +161,10 @@ Open `Android/Ruyi` in Android Studio. Sample icons live in `ruyidemo/src/main/a
 
 See [`Android/Ruyi/PUBLISHING.md`](Android/Ruyi/PUBLISHING.md). Coordinates: **`io.github.reers:ruyi`**.
 
----
+</details>
 
-## HarmonyOS (OHPM)
+<details>
+<summary><strong>HarmonyOS (OHPM)</strong></summary>
 
 ### Platforms
 
@@ -174,22 +188,31 @@ Or in `oh-package.json5`:
 ### Usage
 
 ```ts
-import { Ruyi, RuyiOptions } from '@reers/ruyi';
+import { Ruyi } from '@reers/ruyi';
 import { display } from '@kit.ArkUI';
 
 const density = display.getDefaultDisplaySync().densityDPI / 160;
-const options = new RuyiOptions(
-  24,                 // sizeVp
-  0xFFFF0000,         // color ARGB (optional)
-  2,                  // strokeWidth pt (optional)
-  true,               // absoluteStrokeWidth
-  24,                 // referenceSize
-  density,
-);
 
-const pixelMap = await Ruyi.image(svgString, options);
-// or: await Ruyi.imageBatch(svgStrings, options)
+const pixelMap = await Ruyi.image(svgString, {
+  size: 40,
+  color: 0xFFFF0000,  // ARGB
+  strokeWidth: 2,
+  density,
+});
+
+const maps = await Ruyi.imageBatch(svgSources, {
+  size: 24,
+  color: 0xFFFF0000,  // ARGB
+  density,
+});
 ```
+
+`svgSources` can be SVG XML strings or `ArrayBuffer`s read from rawfile, cache,
+or network responses.
+
+Only `size` is required in Harmony options. Other rendering options can be
+omitted; pass the current display density when you want vp output to resolve to
+physical pixels.
 
 Engine lazy-inits on first render (no public `engineInit` / `engineTerm`).
 
@@ -211,7 +234,7 @@ More detail: [`Harmony/Ruyi/README.md`](Harmony/Ruyi/README.md).
 
 Coordinates: **`@reers/ruyi`**.
 
----
+</details>
 
 ## License
 

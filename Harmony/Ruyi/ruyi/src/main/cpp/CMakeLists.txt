@@ -68,6 +68,15 @@ target_include_directories(ruyi
 
 target_compile_features(ruyi PRIVATE cxx_std_17)
 
+# DevEco's default/debug native build uses -O0, which makes the gradient mask
+# compositor noticeably slower on real devices. Keep this small rendering
+# library optimized even in demo/debug HAPs; correctness does not depend on
+# debug-only behavior, and release builds already expect optimized native code.
+target_compile_options(ruyi
+    PRIVATE
+        $<$<COMPILE_LANGUAGE:CXX>:-O3>
+)
+
 target_link_libraries(ruyi
     PRIVATE
         thorvg

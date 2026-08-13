@@ -17,9 +17,15 @@ let package = Package(
             dependencies: [
                 .product(name: "Ruyi", package: "Ruyi")
             ],
-            path: "Sources/RuyiDemo-macOS",
+            path: "Sources",
+            exclude: [
+                "RuyiDemo-iOS",
+                "RuyiDemo-tvOS",
+                "RuyiDemo-watchOS",
+                "RuyiDemo-visionOS"
+            ],
             resources: [
-                .copy("Resources/Icons")
+                .copy("RuyiDemo-macOS/Resources/Icons")
             ]
         )
     ]
