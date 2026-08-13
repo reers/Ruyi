@@ -41,7 +41,7 @@ mkdir -p ~/.gradle
 
 ### 5. Confirm version in this repo
 
-`gradle.properties` → `VERSION_NAME` (currently `1.0.0`).  
+`gradle.properties` → `VERSION_NAME` (currently `1.0.2`).
 Bump this for every new release. **Do not reuse a version that already exists on Central.**
 
 ### 6. Build & upload
@@ -60,7 +60,7 @@ cd Android/Ruyi
 4. Wait ~10–30+ minutes, then:
 
 ```kotlin
-implementation("io.github.reers:ruyi:1.0.0")
+implementation("io.github.reers:ruyi:1.0.2")
 ```
 
 ---
