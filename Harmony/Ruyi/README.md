@@ -38,3 +38,9 @@ export DEVECO_SDK_HOME=/Applications/DevEco-Studio.app/Contents/sdk
 export PATH="/Applications/DevEco-Studio.app/Contents/tools/hvigor/bin:$PATH"
 hvigorw assembleHap -p module=ruyidemo@default
 ```
+
+## Real device
+
+The committed `build-profile.json5` only names the signing scheme (`"signingConfig": "default"`) and leaves `signingConfigs` empty.
+
+On first device run, open this folder in DevEco Studio → **File → Project Structure → Signing Configs** → enable **Automatically generate signature** (Huawei account required). Studio writes your local cert paths into `signingConfigs`. Do not commit that block — it is machine-specific and will conflict for everyone else.

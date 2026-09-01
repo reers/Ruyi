@@ -1,9 +1,12 @@
 {
   "app": {
+    // Keep empty in git. DevEco Studio auto-sign fills this locally;
+    // do not commit machine-specific cert paths or passwords.
     "signingConfigs": [],
     "products": [
       {
         "name": "default",
+        "signingConfig": "default",
         "compatibleSdkVersion": "5.0.0(12)",
         "runtimeOS": "HarmonyOS",
         "buildOption": {
