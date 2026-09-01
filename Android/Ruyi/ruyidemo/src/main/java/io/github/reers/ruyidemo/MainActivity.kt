@@ -166,8 +166,8 @@ private fun OriginalWorkspace(
     icons: List<IconItem>,
     engineVersion: String,
     tintMode: TintMode,
-    onMode: (TintMode) -> Unit,
     blurb: String = "Original SVG colors and strokes — only size is adjustable.",
+    onMode: (TintMode) -> Unit,
 ) {
     val density = LocalDensity.current.density
     var sizeDp by remember { mutableFloatStateOf(40f) }
