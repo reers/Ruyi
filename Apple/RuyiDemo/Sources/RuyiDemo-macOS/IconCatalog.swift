@@ -1,7 +1,8 @@
 import Foundation
 
 enum IconCatalog {
-    static let icons: [DemoIcon] = loadIcons()
+    static let icons: [DemoIcon] = loadIcons(from: "Icons")
+    static let multicolorIcons: [DemoIcon] = loadIcons(from: "MulticolorIcons")
 
     struct DemoIcon: Identifiable, Hashable {
         var id: String { name }
@@ -17,11 +18,11 @@ enum IconCatalog {
         #endif
     }
 
-    private static func loadIcons() -> [DemoIcon] {
+    private static func loadIcons(from folder: String) -> [DemoIcon] {
         let bundle = resourceBundle
         var urls: [URL] = []
 
-        if let root = bundle.url(forResource: "Icons", withExtension: nil) {
+        if let root = bundle.url(forResource: folder, withExtension: nil) {
             if let enumerator = FileManager.default.enumerator(
                 at: root,
                 includingPropertiesForKeys: nil
@@ -37,7 +38,10 @@ enum IconCatalog {
                 at: resourceRoot,
                 includingPropertiesForKeys: nil
             ) {
-                for case let url as URL in enumerator where url.pathExtension.lowercased() == "svg" {
+                for case let url as URL in enumerator
+                where url.pathExtension.lowercased() == "svg"
+                    && url.path.contains(folder)
+                {
                     urls.append(url)
                 }
             }

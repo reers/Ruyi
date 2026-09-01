@@ -12,6 +12,7 @@
 		1C998C251A4C61B10E736703 /* RuyiDemoWatchOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1976ECE41E64CC3EF711F6FD /* RuyiDemoWatchOSApp.swift */; };
 		23F8E1A25601BE27D632572B /* DemoContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6F9497B8A7A781B9E7F39E7 /* DemoContentView.swift */; };
 		25013FCA385A7B3B675019EE /* Icons in Resources */ = {isa = PBXBuildFile; fileRef = EE134C8C4A7AB7D4A03569BD /* Icons */; };
+		08C2E35F61738495BCDEF012 /* MulticolorIcons in Resources */ = {isa = PBXBuildFile; fileRef = C4E8A91B2D3F40516789ABCD /* MulticolorIcons */; };
 		299FB3D47D5DEC47A47BFB83 /* DemoPlatform.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2025C7570E68FE88177DFE5 /* DemoPlatform.swift */; };
 		29B238065774DF4865286430 /* Ruyi in Frameworks */ = {isa = PBXBuildFile; productRef = 504A2379EE380DCE787295F6 /* Ruyi */; };
 		2EE6BDA3FF2E9F0FF2E45DE9 /* IconCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25524E1F7A84469B200F58B5 /* IconCatalog.swift */; };
@@ -29,11 +30,14 @@
 		87BD89B4C2C93F1D5068C90C /* DemoContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6F9497B8A7A781B9E7F39E7 /* DemoContentView.swift */; };
 		88172A0E70B302620CA5B40F /* DemoContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6F9497B8A7A781B9E7F39E7 /* DemoContentView.swift */; };
 		9238891503899FF9F476732A /* Icons in Resources */ = {isa = PBXBuildFile; fileRef = EE134C8C4A7AB7D4A03569BD /* Icons */; };
+		E6A0C13D4F51627389ABCDEF /* MulticolorIcons in Resources */ = {isa = PBXBuildFile; fileRef = C4E8A91B2D3F40516789ABCD /* MulticolorIcons */; };
 		958FCE7A31B58F6DB910FB36 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB1A3CD67EB49B3042627BA6 /* ContentView.swift */; };
 		A0647E951B9344EE068D3F10 /* Icons in Resources */ = {isa = PBXBuildFile; fileRef = EE134C8C4A7AB7D4A03569BD /* Icons */; };
+		D5F9B02C3E405162789ABCDE /* MulticolorIcons in Resources */ = {isa = PBXBuildFile; fileRef = C4E8A91B2D3F40516789ABCD /* MulticolorIcons */; };
 		AEDD08524178092ADB0A157C /* DemoPlatform.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2025C7570E68FE88177DFE5 /* DemoPlatform.swift */; };
 		BB06BE3886CC368E49406180 /* DemoContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6F9497B8A7A781B9E7F39E7 /* DemoContentView.swift */; };
 		BF998609AE995DED4DECDEA7 /* Icons in Resources */ = {isa = PBXBuildFile; fileRef = EE134C8C4A7AB7D4A03569BD /* Icons */; };
+		F7B1D24E506273849ABCDEF0 /* MulticolorIcons in Resources */ = {isa = PBXBuildFile; fileRef = C4E8A91B2D3F40516789ABCD /* MulticolorIcons */; };
 		CA784F15667B541206258B65 /* Ruyi in Frameworks */ = {isa = PBXBuildFile; productRef = 782D0306C7781CEB95B54DE6 /* Ruyi */; };
 		E1A087356A02143A47C6CB83 /* IconCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25524E1F7A84469B200F58B5 /* IconCatalog.swift */; };
 		E8A4B97D003521DDE5369CCA /* IconCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25524E1F7A84469B200F58B5 /* IconCatalog.swift */; };
@@ -42,6 +46,7 @@
 		F3E81E22C3273416741EFE71 /* IconCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25524E1F7A84469B200F58B5 /* IconCatalog.swift */; };
 		F8AF74F3C3907C899DC34D39 /* DemoPlatform.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2025C7570E68FE88177DFE5 /* DemoPlatform.swift */; };
 		F940D1A3DECF4EA29B768AF0 /* Icons in Resources */ = {isa = PBXBuildFile; fileRef = EE134C8C4A7AB7D4A03569BD /* Icons */; };
+		19D3F460728495A6CDEF0123 /* MulticolorIcons in Resources */ = {isa = PBXBuildFile; fileRef = C4E8A91B2D3F40516789ABCD /* MulticolorIcons */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -61,6 +66,7 @@
 		D6323B099D346D336F2E3882 /* RuyiDemo-iOS.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = "RuyiDemo-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DDFBABB4843EEB6BB9E951BD /* RuyiDemo-tvOS.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = "RuyiDemo-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DFE067FE44292D56BC3577EE /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		C4E8A91B2D3F40516789ABCD /* MulticolorIcons */ = {isa = PBXFileReference; lastKnownFileType = folder; name = MulticolorIcons; path = "Sources/RuyiDemo-macOS/Resources/MulticolorIcons"; sourceTree = SOURCE_ROOT; };
 		EE134C8C4A7AB7D4A03569BD /* Icons */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Icons; path = "Sources/RuyiDemo-macOS/Resources/Icons"; sourceTree = SOURCE_ROOT; };
 		F35B5921A7F0783630A9CD51 /* RuyiDemoMacOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuyiDemoMacOSApp.swift; sourceTree = "<group>"; };
 		F6F9497B8A7A781B9E7F39E7 /* DemoContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoContentView.swift; sourceTree = "<group>"; };
@@ -148,6 +154,7 @@
 			isa = PBXGroup;
 			children = (
 				EE134C8C4A7AB7D4A03569BD /* Icons */,
+				C4E8A91B2D3F40516789ABCD /* MulticolorIcons */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -363,6 +370,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A0647E951B9344EE068D3F10 /* Icons in Resources */,
+				D5F9B02C3E405162789ABCDE /* MulticolorIcons in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -371,6 +379,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F940D1A3DECF4EA29B768AF0 /* Icons in Resources */,
+				19D3F460728495A6CDEF0123 /* MulticolorIcons in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -379,6 +388,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BF998609AE995DED4DECDEA7 /* Icons in Resources */,
+				F7B1D24E506273849ABCDEF0 /* MulticolorIcons in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -387,6 +397,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				25013FCA385A7B3B675019EE /* Icons in Resources */,
+				08C2E35F61738495BCDEF012 /* MulticolorIcons in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -395,6 +406,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9238891503899FF9F476732A /* Icons in Resources */,
+				E6A0C13D4F51627389ABCDEF /* MulticolorIcons in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

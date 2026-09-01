@@ -25,7 +25,8 @@ let package = Package(
                 "RuyiDemo-visionOS"
             ],
             resources: [
-                .copy("RuyiDemo-macOS/Resources/Icons")
+                .copy("RuyiDemo-macOS/Resources/Icons"),
+                .copy("RuyiDemo-macOS/Resources/MulticolorIcons")
             ]
         )
     ]

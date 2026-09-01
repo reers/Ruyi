@@ -89,7 +89,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-private enum class TintMode { Original, Solid, Linear, Radial }
+private enum class TintMode { Original, Multicolor, Solid, Linear, Radial }
 
 private data class IconItem(val name: String, val svg: String)
 
@@ -97,27 +97,39 @@ private data class IconItem(val name: String, val svg: String)
 private fun DemoRoot(engineVersion: String) {
     val context = LocalContext.current
     var icons by remember { mutableStateOf<List<IconItem>>(emptyList()) }
+    var multicolorIcons by remember { mutableStateOf<List<IconItem>>(emptyList()) }
     var tintMode by remember { mutableStateOf(TintMode.Original) }
 
     LaunchedEffect(Unit) {
-        icons = withContext(Dispatchers.IO) {
-            context.assets.list("icons")
-                ?.filter { it.endsWith(".svg") }
-                ?.sorted()
-                ?.map { name ->
-                    IconItem(
-                        name = name.removeSuffix(".svg"),
-                        svg = context.assets.open("icons/$name").bufferedReader().use { it.readText() },
-                    )
-                }
-                .orEmpty()
+        val loaded = withContext(Dispatchers.IO) {
+            fun loadFolder(folder: String): List<IconItem> =
+                context.assets.list(folder)
+                    ?.filter { it.endsWith(".svg") }
+                    ?.sorted()
+                    ?.map { name ->
+                        IconItem(
+                            name = name.removeSuffix(".svg"),
+                            svg = context.assets.open("$folder/$name").bufferedReader().use { it.readText() },
+                        )
+                    }
+                    .orEmpty()
+            loadFolder("icons") to loadFolder("multicolor")
         }
+        icons = loaded.first
+        multicolorIcons = loaded.second
     }
 
     // Hard remount per mode so Solid never inherits Gradient render backlog.
     key(tintMode) {
         when (tintMode) {
             TintMode.Original -> OriginalWorkspace(icons, engineVersion, tintMode) { tintMode = it }
+            TintMode.Multicolor -> OriginalWorkspace(
+                icons = multicolorIcons,
+                engineVersion = engineVersion,
+                tintMode = tintMode,
+                onMode = { tintMode = it },
+                blurb = "Multicolor SVGs keep baked-in fills. Color / stroke stay empty; only size is adjustable.",
+            )
             TintMode.Solid -> SolidWorkspace(icons, engineVersion, tintMode) { tintMode = it }
             TintMode.Linear, TintMode.Radial ->
                 GradientWorkspace(icons, engineVersion, tintMode) { tintMode = it }
@@ -137,7 +149,7 @@ private fun ModePicker(selected: TintMode, onSelect: (TintMode) -> Unit) {
             FilterChip(
                 selected = selected == mode,
                 onClick = { onSelect(mode) },
-                label = { Text(mode.name) },
+                label = { Text(if (mode == TintMode.Multicolor) "Multi" else mode.name) },
                 colors = FilterChipDefaults.filterChipColors(
                     selectedContainerColor = Color(0xFFF25973),
                     selectedLabelColor = Color.White,
@@ -155,6 +167,7 @@ private fun OriginalWorkspace(
     engineVersion: String,
     tintMode: TintMode,
     onMode: (TintMode) -> Unit,
+    blurb: String = "Original SVG colors and strokes — only size is adjustable.",
 ) {
     val density = LocalDensity.current.density
     var sizeDp by remember { mutableFloatStateOf(40f) }
@@ -169,7 +182,7 @@ private fun OriginalWorkspace(
                 if (icons.isEmpty()) return@collectLatest
                 val options = Ruyi.Options(sizeDp = rasterSize, density = density)
                 bitmaps = renderIcons(icons, options)
-                status = "ok · original · ${rasterSize.roundToInt()}dp · ThorVG $engineVersion"
+                status = "ok · ${tintMode.name.lowercase()} · ${rasterSize.roundToInt()}dp · ThorVG $engineVersion"
             }
     }
 
@@ -181,7 +194,7 @@ private fun OriginalWorkspace(
         bitmaps = bitmaps,
         displaySizeDp = sizeDp,
         onReset = { sizeDp = 40f },
-        blurb = "Original SVG colors and strokes — only size is adjustable.",
+        blurb = blurb,
     ) {
         SliderRow("Size", "${sizeDp.roundToInt()}dp", sizeDp, 16f..72f) { sizeDp = it }
     }

@@ -3,6 +3,7 @@ import SwiftUI
 
 enum DemoTintMode: String, CaseIterable, Identifiable {
     case original
+    case multicolor
     case solid
     case linear
     case radial
@@ -12,6 +13,7 @@ enum DemoTintMode: String, CaseIterable, Identifiable {
     var title: String {
         switch self {
         case .original: return "Original"
+        case .multicolor: return "Multi"
         case .solid: return "Solid"
         case .linear: return "Linear"
         case .radial: return "Radial"
@@ -37,7 +39,7 @@ enum DemoLinearDirectionPreset: String, CaseIterable, Identifiable {
     }
 }
 
-/// Shared Apple demo entry: Original / Solid / Linear / Radial with isolated workspaces.
+/// Shared Apple demo entry: Original / Multi / Solid / Linear / Radial with isolated workspaces.
 struct DemoContentView: View {
     @State private var tintMode: DemoTintMode = .original
 
@@ -46,6 +48,8 @@ struct DemoContentView: View {
             switch tintMode {
             case .original:
                 DemoOriginalWorkspace(tintMode: $tintMode)
+            case .multicolor:
+                DemoMulticolorWorkspace(tintMode: $tintMode)
             case .solid:
                 DemoSolidWorkspace(tintMode: $tintMode)
             case .linear, .radial:
@@ -225,6 +229,119 @@ private struct DemoOriginalWorkspace: View {
             scale: displayScale
         )
         let icons = DemoPlatform.icons
+
+        renderBusy = true
+        DispatchQueue.global(qos: .userInteractive).async {
+            var images = [RuyiImage?](repeating: nil, count: icons.count)
+            DispatchQueue.concurrentPerform(iterations: icons.count) { index in
+                images[index] = Ruyi.image(data: icons[index].data, options: options)
+            }
+
+            var next: [String: RuyiImage] = [:]
+            next.reserveCapacity(icons.count)
+            for (icon, image) in zip(icons, images) {
+                if let image { next[icon.name] = image }
+            }
+
+            DispatchQueue.main.async {
+                if generation == renderGeneration { rendered = next }
+                renderBusy = false
+                if generation != renderGeneration {
+                    kickRender()
+                } else {
+                    isRendering = false
+                }
+            }
+        }
+    }
+}
+
+// MARK: - Multicolor
+
+private struct DemoMulticolorWorkspace: View {
+    @Binding var tintMode: DemoTintMode
+    @Environment(\.displayScale) private var displayScale
+
+    @State private var size: Double = DemoMulticolorWorkspace.defaultPreviewSize
+    @State private var rendered: [String: RuyiImage] = [:]
+    @State private var isRendering = false
+    @State private var renderGeneration = 0
+    @State private var renderBusy = false
+    @State private var rasterSize: Double = DemoMulticolorWorkspace.defaultPreviewSize
+
+    private static var defaultPreviewSize: Double {
+        #if os(watchOS)
+        32
+        #elseif os(tvOS)
+        64
+        #else
+        56
+        #endif
+    }
+
+    private var previewRange: ClosedRange<Double> {
+        #if os(watchOS)
+        20...48
+        #elseif os(tvOS)
+        32...96
+        #else
+        24...96
+        #endif
+    }
+
+    var body: some View {
+        DemoWorkspaceShell {
+            VStack(alignment: .leading, spacing: 22) {
+                DemoModePickerView(tintMode: $tintMode).equatable()
+                DemoHeader(reset: reset)
+                Text("Multicolor SVGs keep baked-in fills. Color / stroke stay empty; only size is adjustable.")
+                    .font(.system(size: 13))
+                    .foregroundStyle(.white.opacity(0.55))
+                    .fixedSize(horizontal: false, vertical: true)
+                DemoNumericControl(
+                    title: "Size",
+                    valueText: "\(Int(size.rounded()))px",
+                    value: $size,
+                    range: previewRange,
+                    step: 2
+                )
+                Spacer(minLength: 0)
+                DemoFooter(isRendering: isRendering, iconCount: DemoPlatform.multicolorIcons.count)
+            }
+        } canvas: {
+            DemoIconGrid(icons: DemoPlatform.multicolorIcons, rendered: rendered, displaySize: size)
+        }
+        .onAppear(perform: requestRender)
+        .onChange(of: displayScale) { _ in requestRender() }
+        .onChange(of: size) { newValue in
+            let quantized = newValue.rounded()
+            guard quantized != rasterSize else { return }
+            rasterSize = quantized
+            requestRender()
+        }
+    }
+
+    private func reset() {
+        size = Self.defaultPreviewSize
+        rasterSize = Self.defaultPreviewSize
+        requestRender()
+    }
+
+    private func requestRender() {
+        renderGeneration += 1
+        isRendering = true
+        guard !renderBusy else { return }
+        kickRender()
+    }
+
+    private func kickRender() {
+        let generation = renderGeneration
+        let targetSize = rasterSize
+        let options = Ruyi.Options(
+            size: CGSize(width: targetSize, height: targetSize),
+            scale: displayScale
+        )
+        let icons = DemoPlatform.multicolorIcons
 
         renderBusy = true
         DispatchQueue.global(qos: .userInteractive).async {
@@ -566,7 +683,7 @@ private struct DemoGradientWorkspace: View {
         stops.append(.init(offset: 1, color: DemoPlatform.ruyiColor(from: stop2)))
 
         switch tintMode {
-        case .original, .solid:
+        case .original, .multicolor, .solid:
             return .linear(stops: stops, direction: .topToBottom)
         case .linear:
             return .linear(stops: stops, direction: currentLinearDirection)
@@ -969,7 +1086,7 @@ private struct DemoGradientSummaryView: View, Equatable {
     @ViewBuilder
     private var preview: some View {
         switch tintMode {
-        case .original, .solid:
+        case .original, .multicolor, .solid:
             EmptyView()
         case .linear:
             let ends = linearDirection.unitEndpoints

@@ -9,7 +9,7 @@ interface IconItem {
   svg: string;
 }
 
-type TintMode = 'original' | 'solid' | 'linear' | 'radial';
+type TintMode = 'original' | 'multicolor' | 'solid' | 'linear' | 'radial';
 
 /** Harmony colors are #AARRGGBB (not CSS #RRGGBBAA). Match Apple/iOS demo. */
 namespace DemoColor {
@@ -41,6 +41,7 @@ const PALETTE: number[] = [
 @Component
 struct Index {
   @State icons: IconItem[] = [];
+  @State multicolorIcons: IconItem[] = [];
   @State tintMode: TintMode = 'original';
   @State engineVersion: string = '';
   @State density: number = 3;
@@ -57,23 +58,33 @@ struct Index {
   }
 
   private async loadIcons(): Promise<void> {
-    const ctx = getContext(this) as common.UIAbilityContext;
-    const rm = ctx.resourceManager;
-    const names = [
+    this.icons = await this.loadFolder('icons', [
       'arrow-right', 'battery', 'bell', 'bluetooth', 'camera', 'check',
       'cloud', 'code', 'download', 'gift', 'heart', 'home',
-    ];
+    ]);
+    this.multicolorIcons = await this.loadFolder('multicolor', [
+      'apple', 'avocado', 'banana', 'bear', 'blueberries', 'chemistry',
+      'cherries', 'christmas-stocking', 'donut', 'fries', 'gif-split',
+      'grapes', 'heart-like', 'hobby-class', 'kids-song', 'lychee',
+      'orange', 'pdf-merge', 'peach', 'poetry', 'puzzle', 'santa',
+      'star-favorite', 'strawberry', 'video-course', 'watermelon',
+    ]);
+  }
+
+  private async loadFolder(folder: string, names: string[]): Promise<IconItem[]> {
+    const ctx = getContext(this) as common.UIAbilityContext;
+    const rm = ctx.resourceManager;
     const loaded: IconItem[] = [];
     for (const name of names) {
       try {
-        const bytes = await rm.getRawFileContent(`icons/${name}.svg`);
+        const bytes = await rm.getRawFileContent(`${folder}/${name}.svg`);
         const svg = buffer.from(bytes.buffer).toString('utf-8');
         loaded.push({ name, svg });
       } catch (_e) {
         // skip missing
       }
     }
-    this.icons = loaded;
+    return loaded;
   }
 
   private selectMode(mode: TintMode): void {
@@ -98,9 +109,21 @@ struct Index {
           engineVersion: this.engineVersion,
           density: this.density,
           tintMode: this.tintMode,
+          blurb: 'Original SVG colors and strokes — only size is adjustable.',
           onModeChange: (m: TintMode) => this.selectMode(m),
         })
           .id('ws-original')
+          .layoutWeight(1)
+      } else if (this.tintMode === 'multicolor') {
+        OriginalWorkspace({
+          icons: this.multicolorIcons,
+          engineVersion: this.engineVersion,
+          density: this.density,
+          tintMode: this.tintMode,
+          blurb: 'Multicolor SVGs keep baked-in fills. Color / stroke stay empty; only size is adjustable.',
+          onModeChange: (m: TintMode) => this.selectMode(m),
+        })
+          .id('ws-multicolor')
           .layoutWeight(1)
       } else if (this.tintMode === 'solid') {
         SolidWorkspace({
@@ -169,6 +192,7 @@ struct OriginalWorkspace {
   @Prop engineVersion: string = '';
   @Prop density: number = 3;
   @Prop tintMode: TintMode = 'original';
+  @Prop blurb: string = 'Original SVG colors and strokes — only size is adjustable.';
   onModeChange: (mode: TintMode) => void = (_m: TintMode) => {};
 
   @State pixelMaps: Record<string, image.PixelMap> = {};
@@ -249,7 +273,7 @@ struct OriginalWorkspace {
     const old = this.pixelMaps;
     this.pixelMaps = next;
     this.status =
-      `ok · original · ${ok}/${this.icons.length} · ${Math.round(this.sizeVp)}vp · ThorVG ${this.engineVersion}`;
+      `ok · ${this.tintMode} · ${ok}/${this.icons.length} · ${Math.round(this.sizeVp)}vp · ThorVG ${this.engineVersion}`;
     this.deferRelease(mapsToList(old));
   }
 
@@ -278,7 +302,7 @@ struct OriginalWorkspace {
         tintMode: this.tintMode,
         onModeChange: this.onModeChange,
         status: this.status,
-        blurb: 'Original SVG colors and strokes — only size is adjustable.',
+        blurb: this.blurb,
         onReset: () => {
           this.sizeVp = 40;
           this.scheduleRender();
@@ -1072,8 +1096,9 @@ struct ControlPanel {
   build() {
     Scroll() {
       Column({ space: 8 }) {
-        Row({ space: 8 }) {
+        Flex({ wrap: FlexWrap.Wrap }) {
           this.modeChip('Original', 'original')
+          this.modeChip('Multi', 'multicolor')
           this.modeChip('Solid', 'solid')
           this.modeChip('Linear', 'linear')
           this.modeChip('Radial', 'radial')
@@ -1122,6 +1147,7 @@ struct ControlPanel {
       .padding({ left: 12, right: 12, top: 8, bottom: 8 })
       .backgroundColor(this.tintMode === mode ? DemoColor.accent : DemoColor.white08)
       .borderRadius(16)
+      .margin({ right: 8, bottom: 8 })
       .onClick(() => this.onModeChange(mode))
   }
 }

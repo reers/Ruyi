@@ -186,17 +186,16 @@ private func applyStyleCallback(paint: Tvg_Paint?, data: UnsafeMutableRawPointer
 private func resolvedScale(_ scale: CGFloat) -> CGFloat {
     if scale > 0 { return scale }
 
-#if canImport(UIKit)
+#if os(watchOS)
+    // UITraitCollection is unavailable on watchOS even though UIKit imports.
+    let deviceScale = WKInterfaceDevice.current().screenScale
+    return deviceScale > 0 ? deviceScale : 2
+#elseif canImport(UIKit)
     // WWDC26 / UIKit guidance: replace UIScreen.main.scale with displayScale.
     // 0 means “unspecified” (no trait environment / background thread) → @2x.
     let traitScale = UITraitCollection.current.displayScale
     if traitScale > 0 { return traitScale }
-#if os(watchOS)
-    let deviceScale = WKInterfaceDevice.current().screenScale
-    return deviceScale > 0 ? deviceScale : 2
-#else
     return 2
-#endif
 
 #elseif canImport(AppKit)
     return NSScreen.main?.backingScaleFactor ?? 2

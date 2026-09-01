@@ -17,6 +17,14 @@ enum DemoPlatform {
         #endif
     }
 
+    static var multicolorIcons: [IconCatalog.DemoIcon] {
+        #if os(watchOS)
+        Array(IconCatalog.multicolorIcons.prefix(12))
+        #else
+        IconCatalog.multicolorIcons
+        #endif
+    }
+
     static var usesColorPicker: Bool {
         #if os(tvOS) || os(watchOS)
         false
