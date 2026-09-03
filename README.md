@@ -127,7 +127,7 @@ macOS CLI fallback: `cd Apple/RuyiDemo && ./run.sh`
 
 ```kotlin
 dependencies {
-    implementation("io.github.reers:ruyi:1.0.2")
+    implementation("io.github.reers:ruyi:1.0.3")
 }
 ```
 
