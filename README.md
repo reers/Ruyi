@@ -135,18 +135,23 @@ dependencies {
 
 ```kotlin
 import io.github.reers.ruyi.Ruyi
+import io.github.reers.ruyi.Ruyi.Size.Dp
+import io.github.reers.ruyi.Ruyi.Size.Px
 
 val bitmap = Ruyi.image(
     svgString,
     Ruyi.Options(
-        sizeDp = 40f,
+        size = Dp(40f, density = resources.displayMetrics.density),
         color = 0xFFFF0000.toInt(),
         strokeWidth = 2f,
-        density = resources.displayMetrics.density,
     ),
 )
 
-// or: Ruyi.image(context, "heart", options)
+// pixels directly (e.g. after a smallestWidth lookup)
+val fromPx = Ruyi.image(svgString, Ruyi.Options(size = Px(120f)))
+
+// or: Ruyi.image(context, "heart", Px(120f))
+// or: Ruyi.image(context, "heart", Dp(40f, density))
 ```
 
 ### Demo

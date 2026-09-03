@@ -132,32 +132,70 @@ object Ruyi {
     }
 
     /**
+     * Output size: either device pixels, or logical dp plus density.
+     * Kotlin's counterpart to a Swift enum with associated values — one case only.
+     *
+     * ```
+     * import io.github.reers.ruyi.Ruyi.Size.Dp
+     * import io.github.reers.ruyi.Ruyi.Size.Px
+     *
+     * Px(120f)
+     * Dp(40f, density)
+     * ```
+     */
+    sealed class Size {
+        /** Bitmap edge in device pixels. */
+        data class Px(val px: Float) : Size()
+
+        /** Logical dp. Pixel size = [dp] × [density] (rounded). */
+        data class Dp @JvmOverloads constructor(
+            val dp: Float,
+            val density: Float = 1f,
+        ) : Size()
+
+        internal fun isValid(): Boolean = when (this) {
+            is Px -> px > 0f
+            is Dp -> dp > 0f && density > 0f
+        }
+
+        internal fun pixelSize(): Int = when (this) {
+            is Px -> px.roundToInt().coerceAtLeast(1)
+            is Dp -> (dp * density).roundToInt().coerceAtLeast(1)
+        }
+
+        /** Logical edge used for absolute-stroke conversion. */
+        internal fun designSize(): Float = when (this) {
+            is Px -> px
+            is Dp -> dp
+        }
+    }
+
+    /**
      * Rendering options for SVG → bitmap conversion.
      *
-     * Pixel size = [sizeDp] × [density] (rounded). Stroke semantics match Apple Ruyi:
-     * - [absoluteStrokeWidth] = true: [strokeWidth] is constant in points regardless of size
-     * - [absoluteStrokeWidth] = false: stroke scales with `sizeDp / referenceSize` (default)
+     * [size] is either [Size.Px] or [Size.Dp] — not both.
+     * Stroke semantics match Apple Ruyi:
+     * - [absoluteStrokeWidth] = true: [strokeWidth] is constant relative to [Size]
+     *   (`Dp` → constant dp; `Px` → constant px)
+     * - [absoluteStrokeWidth] = false: stroke scales with size / [referenceSize] (default)
      *
      * When [gradient] is set it takes precedence over [color].
      */
     data class Options(
-        /** Output size in density-independent pixels (logical). */
-        val sizeDp: Float,
+        val size: Size,
         /** Optional solid tint as Android-packed `0xAARRGGBB`; `null` keeps SVG colors. */
         val color: Int? = null,
         /** Optional gradient tint; takes precedence over [color]. */
         val gradient: GradientTint? = null,
-        /** Optional stroke width in points (see [absoluteStrokeWidth]). */
+        /** Optional stroke width (see [absoluteStrokeWidth]). */
         val strokeWidth: Float? = null,
         /**
-         * When `true`, [strokeWidth] is constant in points regardless of [sizeDp].
-         * When `false`, stroke scales with `sizeDp / referenceSize` (Lucide-style). Default.
+         * When `true`, [strokeWidth] is constant regardless of size.
+         * When `false`, stroke scales with size / [referenceSize] (Lucide-style). Default.
          */
         val absoluteStrokeWidth: Boolean = false,
         /** Design-size baseline used when [absoluteStrokeWidth] is `false`. Default 24. */
         val referenceSize: Float = 24f,
-        /** Screen density. Use `Resources.displayMetrics.density` for device pixels. */
-        val density: Float = 1f,
     )
 
     @JvmStatic
@@ -166,8 +204,8 @@ object Ruyi {
 
     @JvmStatic
     fun image(bytes: ByteArray, options: Options): Bitmap? {
-        if (bytes.isEmpty() || options.sizeDp <= 0f || options.density <= 0f) return null
-        val sizePx = (options.sizeDp * options.density).roundToInt().coerceAtLeast(1)
+        if (bytes.isEmpty() || !options.size.isValid()) return null
+        val sizePx = options.size.pixelSize()
         val packed = options.gradient?.pack()
         return ThorVG.renderSvg(
             svg = bytes,
@@ -176,7 +214,7 @@ object Ruyi {
             argb = if (packed != null) 0 else (options.color ?: 0),
             strokeWidth = options.strokeWidth,
             absoluteStrokeWidth = options.absoluteStrokeWidth,
-            designSize = options.sizeDp,
+            designSize = options.size.designSize(),
             referenceSize = options.referenceSize,
             gradientKind = packed?.kind ?: 0,
             stopOffsets = packed?.offsets,
@@ -196,13 +234,13 @@ object Ruyi {
         return image(data, options)
     }
 
-    /** Convenience: square icon with density from [context]. */
+    /** Convenience: square icon. Pass [Size.Px] or [Size.Dp]. */
     @JvmStatic
     @JvmOverloads
     fun image(
         context: Context,
         assetName: String,
-        sizeDp: Float,
+        size: Size,
         color: Int? = null,
         strokeWidth: Float? = null,
         absoluteStrokeWidth: Boolean = false,
@@ -211,12 +249,11 @@ object Ruyi {
         context,
         assetName,
         Options(
-            sizeDp = sizeDp,
+            size = size,
             color = color,
             strokeWidth = strokeWidth,
             absoluteStrokeWidth = absoluteStrokeWidth,
             referenceSize = referenceSize,
-            density = context.resources.displayMetrics.density,
         ),
     )
 

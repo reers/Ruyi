@@ -175,14 +175,16 @@ private fun OriginalWorkspace(
     var status by remember { mutableStateOf("ready") }
 
     LaunchedEffect(icons) {
-        snapshotFlow { sizeDp.roundToInt().toFloat() }
+        snapshotFlow { sizeDp.roundToInt().toFloat() to density }
             .distinctUntilChanged()
             .conflate()
-            .collectLatest { rasterSize ->
+            .collectLatest { (rasterDp, d) ->
                 if (icons.isEmpty()) return@collectLatest
-                val options = Ruyi.Options(sizeDp = rasterSize, density = density)
+                val sizePx = rasterDp * d
+                val options = Ruyi.Options(size = Ruyi.Size.Px(sizePx))
                 bitmaps = renderIcons(icons, options)
-                status = "ok · ${tintMode.name.lowercase()} · ${rasterSize.roundToInt()}dp · ThorVG $engineVersion"
+                status =
+                    "ok · ${tintMode.name.lowercase()} · ${rasterDp.roundToInt()}dp → ${sizePx.roundToInt()}px · ThorVG $engineVersion"
             }
     }
 
@@ -236,11 +238,10 @@ private fun SolidWorkspace(
             .collectLatest { req ->
                 if (icons.isEmpty()) return@collectLatest
                 val options = Ruyi.Options(
-                    sizeDp = req.size,
+                    size = Ruyi.Size.Dp(req.size, density),
                     color = hsvToArgb(req.hue, 0.75f, 1f),
                     strokeWidth = req.stroke,
                     absoluteStrokeWidth = req.abs,
-                    density = density,
                 )
                 bitmaps = renderIcons(icons, options)
                 val mode = if (req.abs) "abs" else "rel"
@@ -315,11 +316,10 @@ private fun GradientWorkspace(
             .collectLatest { req ->
                 if (icons.isEmpty() || req.editorOpen) return@collectLatest
                 val options = Ruyi.Options(
-                    sizeDp = req.size,
+                    size = Ruyi.Size.Dp(req.size, density),
                     gradient = committedGradient,
                     strokeWidth = req.stroke,
                     absoluteStrokeWidth = req.abs,
-                    density = density,
                 )
                 bitmaps = renderIcons(icons, options)
                 status =
